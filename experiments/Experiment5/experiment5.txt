@@ -1,0 +1,25 @@
+Domenic Mancuso
+Experiment 5
+
+1)
+local = 3
+global = 13
+*dynamic = 113
+2)
+local addr = (int *) 0x7fffffffe684
+global addr = (int *) 0x555555755014 <global>
+dynamic addr = (int *) 0x5555557566b0
+3)
+&dynamic addr = (int **) 0x7fffffffe688.
+since 'dynamic' is already a pointer, referencing it will print a pointer to a pointer
+&dynamic prints the stack address to 'dynamic', which contains the heap address to '113'.
+4)
+printing func will provide the memory address at which the function is created. I will relay what is printed along with the assembly code:
+
+(gdb) p func
+$8 = {void (int)} 0x55555555469f <func>
+(gdb) disas func
+Dump of assembler code for function func:
+   0x000055555555469f <+0>:	push   %rbp
+
+as you can see, func's address is the same as where %rbp is pushed, essentially declaring the function in assembly.

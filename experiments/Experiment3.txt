@@ -1,0 +1,10 @@
+Domenic Mancuso
+Experiment 3
+
+NUM failed at 11.
+
+When the failure occurs, the stack canary detects an overflow where data is illegaly overwritten. What this means is that we are writing over data in our program that is not supposed to be overwritten, and the program crashes to avoid further corruption. The data that is not supposed to be overwritten can include the return address. I noticed that when the failure occurs, the program is not able to return an exit status. When we write data that is outside of the array's bounds, we are writing over the exit status (the return address) and potentialy other variables and functions that are stored in addresses past the array. 
+
+This is what the overflow message states:
+*** stack smashing detected ***: <unknown> terminated
+Aborted (core dumped)
