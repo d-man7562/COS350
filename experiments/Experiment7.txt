@@ -1,0 +1,4 @@
+grep -w ".*eic.*" words | wc -l > ~/wordcount.txt 
+
+Linux command used to find all words that are an exception to the "I before E except after C" rule 
+in a text file that contains words in alphabetical order. 
