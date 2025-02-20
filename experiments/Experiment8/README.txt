@@ -1,7 +1,4 @@
-Script started on 2025-02-19 16:26:46-0500
-domenic.mancuso@honeybee:~/COS350/experiments/Experiment8$ ./argsort 123 456 678[K[K[K789 19 [K[K9[K01112
-123 456 789 101112 ./argsort domenic.mancuso@honeybee:~/COS350/experiments/Experiment8$ ./argsort 123 456 789 101112[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kdomenic mancuso domenic_mancuso domenic-mancuso honeb[Kynee[K[K[Kbee cs usm main eedu[K[K[K[K[Ke edu
-cs usm edu maine domenic mancuso honeybee ./argsort domenic_mancuso domenic-mancuso domenic.mancuso@honeybee:~/COS350/experiments/Experiment8$ ./argsort domenic mancuso domenic_mancuso domenic-mancuso honeybee cs usm maine edu[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kag[Krgsort arg sort ARG SORT ARGSORT S[KARG_SORT arg_st[Kort arg-st[Kort ARG-s[KSORT arg-SORT ARG-sro[K[Kort  arg_st[Kort AR[K[K[K[K[K[KS[K[KSORT ARG_sort erg_sort
-arg ARG sort SORT argsort ARGSORT ARG_SORT arg_sort arg-sort ARG-SORT arg-SORT ARG-sort arg_SORT ARG_sort erg_sort ./argsort domenic.mancuso@honeybee:~/COS350/experiments/Experiment8$ exit
+C script that arranges your arguments in lexicographical order.
 
-Script done on 2025-02-19 16:28:52-0500
+USAGE: ./argsort <ITEM> <ITEM> <ITEM> ...
+
