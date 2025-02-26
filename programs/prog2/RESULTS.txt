@@ -1,0 +1,50 @@
+Script started on 2025-02-25 22:00:27-0500
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ cp ks[K[Kshort.txt short.orig
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ cp shake.txt shake.orig
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827 short.txt
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827 short.txt[1P.txt[1P.txt[1P.txta.txtk.txte.txt
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ ls -l
+total 19628
+-rwx------ 1 domenic.mancuso domenic.mancuso       7 Feb 14 12:01 7.txt
+-rw------- 1 domenic.mancuso domenic.mancuso    1511 Feb 25 21:41 README.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso 4676191 Feb 14 12:01 reference.shake.txt.z827
+-rw------- 1 domenic.mancuso domenic.mancuso       0 Feb 25 22:00 RESULTS.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso 5344213 Feb 25 22:00 shake.orig
+-rw------- 1 domenic.mancuso domenic.mancuso 4676191 Feb 25 22:00 shake.txt.z827
+-rwx------ 1 domenic.mancuso domenic.mancuso      67 Feb 25 22:00 short.orig
+-rw------- 1 domenic.mancuso domenic.mancuso      63 Feb 25 22:00 short.txt.z827
+-rwx------ 1 domenic.mancuso domenic.mancuso      63 Feb 14 12:01 short.txt.z827.referenceSoln
+-rw------- 1 domenic.mancuso domenic.mancuso      58 Feb 24 18:48 wtf.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso   13096 Feb 25 12:23 z827
+-rw------- 1 domenic.mancuso domenic.mancuso    4646 Feb 25 12:22 z827.c
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ od -t x1 short.txt.z928[K[K[K827
+0000000 43 00 00 00 82 83 9e 9d bc 36 65 41 d3 2f 8e 88
+0000020 33 69 d9 95 07 4d e8 31 65 41 d7 9e 5c 88 34 ee
+0000040 41 d3 2f 3e 9a 77 67 41 bf af 44 1d 34 65 41 e9
+0000060 c3 26 e8 31 ef db c3 96 5e 7c f4 ef dc b8 50
+0000077
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827 short.txt.z827
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827 sha`[Kke.txt.z827 
+ls domenic.mancuso@honeybee:~/COS350/programs/prog2$ ls -l
+total 20280
+-rwx------ 1 domenic.mancuso domenic.mancuso       7 Feb 14 12:01 7.txt
+-rw------- 1 domenic.mancuso domenic.mancuso    1511 Feb 25 21:41 README.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso 4676191 Feb 14 12:01 reference.shake.txt.z827
+-rw------- 1 domenic.mancuso domenic.mancuso       0 Feb 25 22:00 RESULTS.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso 5344213 Feb 25 22:00 shake.orig
+-rw------- 1 domenic.mancuso domenic.mancuso 5344213 Feb 25 22:01 shake.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso      67 Feb 25 22:00 short.orig
+-rw------- 1 domenic.mancuso domenic.mancuso      67 Feb 25 22:01 short.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso      63 Feb 14 12:01 short.txt.z827.referenceSoln
+-rw------- 1 domenic.mancuso domenic.mancuso      58 Feb 24 18:48 wtf.txt
+-rwx------ 1 domenic.mancuso domenic.mancuso   13096 Feb 25 12:23 z827
+-rw------- 1 domenic.mancuso domenic.mancuso    4646 Feb 25 12:22 z827.c
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ cmp short.txt short.orig
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ cmp shake.txt shake.orign[K
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827 badfilename
+Error opening input file: No such file or directory
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ z827
+Usage: z827 filename
+domenic.mancuso@honeybee:~/COS350/programs/prog2$ exit
+
+Script done on 2025-02-25 22:02:13-0500
