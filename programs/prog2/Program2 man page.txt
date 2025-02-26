@@ -1,0 +1,40 @@
+﻿z827(1) - Linux man page
+Name
+z827 - compress or expand files
+Synopsis
+z827 [ name ... ]
+
+Description
+Z827 reduces the size of the named files using bit-packing compression. Each file is replaced by one with the extension .z827, while keeping the same ownership modes. Z827 accepts no more than one file at a time and offers no flags.
+To compress, files must be of the ASCII text format. Files that contain emojis, characters from foreign languages, and other non-ASCII characters will not be accepted.
+Z827 compresses text by packing the most significant bit of an 8-bit binary character into a 7 byte character array. When fully compressed, 8 bytes will be squeezed into 7 character pointers via left shifting one bit per byte. This works because typical ASCII has an ‘OFF’ most significant bit and thus can be “peeled off” without losing any information.
+Z827 can currently decompress files that provide the extension .z827, which will return the file expanded, e.g., every 7-bit byte shifted right one time.
+See Also
+gzip(1), znew(1), zcmp(1), zmore(1), zforce(1), gzexe(1), zip(1), unzip(1), compress(1), pack(1), compact(1)
+The z827 file format is specified in Houser, Z827 file format specification version 4.3, <houser@cs.usm.maine.edu>, Internet (February 2025). 
+Diagnostics
+Exit status is normally 0; if an error occurs, exit status is 1. 
+Usage: z827 filename
+Invalid options were specified on the command line.
+
+
+Error: incompatible encoding
+Characters are not of type ASCII
+
+
+Error reading file size
+The file specified to z827 has not been compressed properly.
+
+
+Error creating output file
+The file specified to z872 is unable to output a file.
+
+
+Error opening input file
+The file specified to z872 is unable to open a file
+Copyright Notice
+Copyright © 2025 Company Company Inc.
+Copyright © 2025 Domenic Mancuso 
+Permission is granted to make and distribute verbatim copies of this manual provided the copyright notice and this permission notice are preserved on all copies.
+Permission is granted to copy and distribute modified versions of this manual under the conditions for verbatim copying, provided that the entire resulting derived work is distributed under the terms of a permission notice identical to this one.
+Permission is granted to copy and distribute translations of this manual into another language, under the above conditions for modified versions, except that this permission notice may be stated in a translation approved by the Foundation.
