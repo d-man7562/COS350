@@ -1,5 +1,7 @@
 #include <stdio.h>
-
+#include <pwd.h>
+#include <unistd.h>
+#include <dirent.h>
 void archive(char* fn, char * archivename);
 void unarchive(char* fn);
 
@@ -17,7 +19,9 @@ throw an error. */
 if (strcmp(argv[1],"c") == 0) {
 archive(argv[2], archivename);
 }
-
+/*get users name from system*/
+uid_t uid = getuid();
+struct passwd pw = getpwuid(uid);
 /*extract*/
 if (strcmp(argv[1],"x") == 0) {
 unarchive(argv[2]);
@@ -30,6 +34,7 @@ return 0;
 }
 
 void archive(char * fn,char * archivename) { 
+/*check for missing filename*/
 if (fn == NULL){
 perror("Error: missing filename");
 return 1;
@@ -49,3 +54,5 @@ if (len >= 2 && filename[len-2] == '.' && filename[len-1] == 'z') {
 
 /* read file to archive
 check if argv3 is null
+archivename is arg3
+
