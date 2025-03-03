@@ -5,51 +5,53 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdbool.h>
+
+
 void archive(char* fn);
 void unarchive(char* fn);
 char * give_proper_name(char * name);
 bool file_exists_in_current_dir(const char *filename);
+
+
 int main(int argc, char**argv) {
-/*should be argv[2]*/
-char* archivename;
+	/*should be argv[2]*/
+	char* archivename;
 
-/*get users name from system*/
-uid_t uid = getuid();
-struct passwd *pw = getpwuid(uid);
+	/*get users name from system*/
+	uid_t uid = getuid();
+	struct passwd *pw = getpwuid(uid);
 
-if (argc ==2) {
+	if (argc ==2) {
+    		printf("Archived file name has not been provided. Please enter name of archived file:\n");
+    	 	   archivename = scanf(stdin);
+   	 	if (argv[1] == 'c'){
+        		give_proper_name(archivename);
+        		archive(archivename);
+   	 }
     
-    if (argv[1] == 'c'){
-        printf("Archived file name has not been provided. Please enter name of archived file:\n");
-        archivename = scanf(stdin);
-        give_proper_name(archivename);
-        archive(archivename);
-    }
-    
-    if (argv[1] == 'x'){
-
-        unarchive(/*filename*/);
-    }
-
-
+   	 	if (argv[1] == 'x'){
+        		unarchive(/*filename*/);
 
 }
-if (argc ==3) {
+	}		
+	if (argc ==3) {
 
-archivename = argv[2];
-give_proper_name(archivename);
-if (argv[1] == 'c'){
-    archive(archivename);
-}
+		archivename = argv[2];
+	if (argv[1] == 'c'){
+		printf("Archived file name has not been provided. Please enter name of archived file:\n");
+        	archivename = scanf(stdin);    		
+		archive(archivename);
+	}
     if (argv[1] == 'x'){
         unarchive(/*filename*/);
-    }
+   }
 }
 
-else{
-    fprintf(stderr, "Usage: zarchive [x,c] filename\n");
-    return 1;
-}
+	else{
+   	 fprintf(stderr, "Usage: zarchive [x,c] filename\n");
+    	return 1;
+	}
+
 return 0;
 }
 
@@ -87,17 +89,34 @@ char * give_proper_name(char * name){
         closedir(dir);
         
         return found;
-    }
-void archive(char * fn) { 
-/*check if file name is in the system
-if so, return an error. 
-otherwise, continue with control flow*/
-if (file_exists_in_current_dir(fn)) {
-perror("Error: file already exists in current directory.\n");
-return 1;
+    
 }
-DIR *dir;
-        struct dirent *entry;
+
+
+void archive(char * fn) { 
+	/*Check if file name is in the system
+		if so, return an error. 
+	otherwise, continue with control flow*/
+
+	if (file_exists_in_current_dir(fn)) {
+	perror("Error: file already exists in current directory.\n");
+		return 1;
+	}
+	
+	list_dir();
+}
+
+ void list_dir(void)
+{
+	DIR *dir;
+        struct dirent **namelist;
+	struct stat stat;
+	int n;
+	 n = scandir('.', namelist, NULL, alphasort)
+	if (stat(namelist, stat) ==0){
+	printf("\n")
+
+
         dir = opendir(".");
         while ((entry = readdir(dir)) != NULL) {
             snprintf(filepath, sizeof(filepath), "./%s", entry->d_name);
@@ -118,7 +137,6 @@ DIR *dir;
                file_stat.st_size, 
                timestr);
     }
-
 }
 
- 
+
