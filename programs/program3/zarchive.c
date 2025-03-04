@@ -104,38 +104,41 @@ void archive(char * fn) {
 	}
 	
 	list_dir();
+    /*prompt user for which files to archive*/
+    printf("Please select which files to archive, type exit to continue\n");
 }
 
  void list_dir(void)
 {
 	DIR *dir;
-        struct dirent **namelist;
-	struct stat stat;
+    struct dirent **namelist;
+	struct stat fs;
 	int n;
-	 n = scandir('.', namelist, NULL, alphasort)
-	if (stat(namelist, stat) ==0){
-	printf("\n")
-
-
-        dir = opendir(".");
-        while ((entry = readdir(dir)) != NULL) {
-            snprintf(filepath, sizeof(filepath), "./%s", entry->d_name);
-        
-        // Get file statistics
-        if (stat(filepath, &file_stat) == -1) {
-            perror("Failed to get file stats");
-            continue;
+	 n = scandir('.', namelist, NULL, alphasort);
+     if (n < 0) 
+     {
+         perror("scandir");
+         exit(EXIT_FAILURE);
+     }
+     
+     for (i = 0; i < n; i++) {
+        char *filename = namelist[i]->d_name && namelist[i]->d_name != '.' && namelist[i]->d_name != '..';
+       
+        if (stat(filename, &fs) <0) 
+        {
+        perror("stat");
+       exit(EXIT_FAILURE);
         }
+
+
+	if (stat(filename, &fs) ==0){
         
-        // Format the modification time
-        struct tm *time_info = localtime(&file_stat.st_mtime);
-        strftime(timestr, sizeof(timestr), "%Y-%m-%d %H:%M:%S", time_info);
-        
-        // Print file information
-        printf("%-30s %-10ld %-20s\n", 
-               entry->d_name, 
-               file_stat.st_size, 
-               timestr);
+        /*Print the size, modification date and time, and the file name.*/
+        printf("%-30s %-10s %-20ld\n",        
+        namelist[i]->d_name,
+        fs.st_mtime,
+        fs.st_size);
+        }        
     }
 }
 
