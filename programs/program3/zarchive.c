@@ -106,6 +106,10 @@ void archive(char * fn) {
 	list_dir();
     /*prompt user for which files to archive*/
     printf("Please select which files to archive, type exit to continue\n");
+	char  *entry = scanf(stdin);
+	if (entry == '*';
+	archive_all();
+
 }
 
  void list_dir(void)
