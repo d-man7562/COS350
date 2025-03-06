@@ -5,145 +5,217 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdbool.h>
-
-
-void archive(char* fn);
-void unarchive(char* fn);
-char * give_proper_name(char * name);
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+void archive(char *fn);
+//void unarchive(char *fn);
+char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
+char * two_args(char * a);
+char * three_args(char * a, char * b);
+int list_dir(void);
+int main(int argc, char **argv)
+{
+    char *archivename;
+
+    uid_t uid = getuid();
+    struct passwd *pw = getpwuid(uid);
+    if (argc == 2 || argc == 3)
+    {
+    /*If two arguments, we need to get the name of the file to zip/unzip.*/
+    if (argc == 2)
+    {
+        two_args(argv[1]);
+    }
+    /*If three arguments, determine whether to archive or extract.*/
+    if (argc == 3)
+    {
+        three_args(argv[1], argv[2]);
+    }
+    }
+    /*Show user how to properly input command*/
+    else
+    {
+        fprintf(stderr, "Usage: zarchive [x,c] filename\n");
+        return 1;
+    }
+
+    return 0;
+}
 
 
-int main(int argc, char**argv) {
-	/*should be argv[2]*/
-	char* archivename;
+/*We need to format for archive name, also ensure file does not exist for archiver and does exist for unarchiver.*/
+char *three_args(char *a, char *b)
+{
+    if (*a=='c' || *a=='x')
+    {
 
-	/*get users name from system*/
-	uid_t uid = getuid();
-	struct passwd *pw = getpwuid(uid);
-
-	if (argc ==2) {
-    		printf("Archived file name has not been provided. Please enter name of archived file:\n");
-    	 	   archivename = scanf(stdin);
-   	 	if (argv[1] == 'c'){
-        		give_proper_name(archivename);
-        		archive(archivename);
-   	 }
+    give_proper_name(b);
     
-   	 	if (argv[1] == 'x'){
-        		unarchive(/*filename*/);
+    if (*a == 'c')
+    {
+        if (!file_exists_in_current_dir(b)){
+      
+            archive(b);
+        }
+        else
+        {
+            fprintf(stderr, "Error: archived filename already exists.\n");
+            return NULL;
+        }
+    }
 
+    if (*a == 'x')
+    {
+        if (file_exists_in_current_dir(b)){
+        //unarchive(b);
+    }
+    else
+    {   
+    fprintf(stderr, "Error: file does not exist\n");
+    return NULL;
 }
-	}		
-	if (argc ==3) {
-
-		archivename = argv[2];
-	if (argv[1] == 'c'){
-		printf("Archived file name has not been provided. Please enter name of archived file:\n");
-        	archivename = scanf(stdin);    		
-		archive(archivename);
-	}
-    if (argv[1] == 'x'){
-        unarchive(/*filename*/);
-   }
+}
+}
+else{
+    fprintf(stderr, "Usage: zarchive [x,c] filename\n");
+}
 }
 
-	else{
-   	 fprintf(stderr, "Usage: zarchive [x,c] filename\n");
-    	return 1;
-	}
+     /*We need to ask the name of the file for both if branches.*/
+char *two_args(char *c)
+{
+    if (*c =='c' || *c =='x')
+    {
 
-return 0;
+    char buf[50];
+    
+    printf("Archived file name has not been provided. Please enter name of archived file:\n");
+    fgets(buf, sizeof(buf), stdin);
+    give_proper_name(buf);
+
+    if (*c == 'c')
+    {
+        if (!file_exists_in_current_dir(buf)){
+        archive(buf);
+    }
+    else
+    {
+        fprintf(stderr, "Error: archived filename already exists.\n");
+        return NULL;
+    }
+}
+    if (*c == 'x')
+    {
+        if (file_exists_in_current_dir(buf)){
+
+            // unarchive(buf);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Error: archived filename does not exist.\n");
+        return NULL;
+    }
+}
+    else
+    {
+    fprintf(stderr, "Usage: zarchive [x,c] filename\n");
+}
 }
 
-char * give_proper_name(char * name){
-    int len = strlen(name);
-    if (!len >= 2 && name[len-2] == '.' && name[len-1] == 'z') {
-        char * new_string = '.z'; 
-        name = strcat(new_string, name);
+/*Check if string is formatted with '.z' extension.*/
+char *give_proper_name(char *name)
+{
+    int len = sizeof(name)/sizeof(char*);
+    if (!len >= 2 && name[len - 2] == '.' && name[len - 1] == 'z')
+    {
+        char zappend [3];
+        zappend[0]='.';
+        zappend[1]= 'z';
+        zappend[2] = '\0';
+        name = strcat(name, zappend);
     }
     return name;
+}
+
+/*Boolean returns true if filename is found in current directory.*/
+bool file_exists_in_current_dir(const char *filename)
+{
+    DIR *dir;
+    struct dirent *entry;
+    bool found = false;
+    dir = opendir(".");
+   
+    if (dir == NULL)
+    {
+        perror("Unable to open current directory\n");
+        return false;
+    }
+   
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strcmp(entry->d_name, filename) == 0)
+        {
+            found = true;
+            break;
+        }
+    }
+    closedir(dir);
+    return found;
+}
+
+int list_dir(void)
+{
+    DIR *dir;
+    struct dirent **namelist;
+    struct stat fs;
+    int n;
+    n = scandir(".", &namelist, NULL, alphasort);
+    if (n < 0)
+    {
+        perror("scandir");
+        exit(EXIT_FAILURE);
     }
 
-    bool file_exists_in_current_dir(const char *filename) {
-        DIR *dir;
-        struct dirent *entry;
-        bool found = false;
-        
-        // Open the current directory
-        dir = opendir(".");
-        if (dir == NULL) {
-            perror("Unable to open current directory");
-            return false;
+    for (int i = 0; i < n; i++)
+    {
+        /*Filter out . and ..*/
+        if (strcmp(namelist[i]->d_name, ".") == 0 || strcmp(namelist[i]->d_name, "..") == 0) {
+            free(namelist[i]); 
+            continue;
         }
-        
-        // Read directory entries
-        while ((entry = readdir(dir)) != NULL) {
-            // Compare the entry name with the target filename
-            if (strcmp(entry->d_name, filename) == 0) {
-                found = true;
-                break;
-            }
+        if (stat(namelist[i]->d_name, &fs) < 0)
+        {
+            perror("stat");
+            free(namelist[i]);
+            exit(EXIT_FAILURE);
         }
-        
-        // Close the directory
-        closedir(dir);
-        
-        return found;
+
+        char buf[80];
+        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&fs.st_mtime));
+            /*Print the size, modification date and time, and the file name.*/
+            printf("%-30s %-20s %-10ld\n", namelist[i]->d_name,
+                   buf,
+                   fs.st_size);
+                   
+                   free(namelist[i]);
+                }
+                free(namelist);
+                
+                return n;
+    }
+
+
+
+void archive(char *fn)
+{
+  
+    int n;
+    n = list_dir();
+    printf("Please select which files to archive, type exit to continue\n");
+    char * buf[n];
+    
     
 }
-
-
-void archive(char * fn) { 
-	/*Check if file name is in the system
-		if so, return an error. 
-	otherwise, continue with control flow*/
-
-	if (file_exists_in_current_dir(fn)) {
-	perror("Error: file already exists in current directory.\n");
-		return 1;
-	}
-	
-	list_dir();
-    /*prompt user for which files to archive*/
-    printf("Please select which files to archive, type exit to continue\n");
-	char  *entry = scanf(stdin);
-	if (entry == '*';
-	archive_all();
-
-}
-
- void list_dir(void)
-{
-	DIR *dir;
-    struct dirent **namelist;
-	struct stat fs;
-	int n;
-	 n = scandir('.', namelist, NULL, alphasort);
-     if (n < 0) 
-     {
-         perror("scandir");
-         exit(EXIT_FAILURE);
-     }
-     
-     for (i = 0; i < n; i++) {
-        char *filename = namelist[i]->d_name && namelist[i]->d_name != '.' && namelist[i]->d_name != '..';
-       
-        if (stat(filename, &fs) <0) 
-        {
-        perror("stat");
-       exit(EXIT_FAILURE);
-        }
-
-
-	if (stat(filename, &fs) ==0){
-        
-        /*Print the size, modification date and time, and the file name.*/
-        printf("%-30s %-10s %-20ld\n",        
-        namelist[i]->d_name,
-        fs.st_mtime,
-        fs.st_size);
-        }        
-    }
-}
-
-
