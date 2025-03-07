@@ -8,15 +8,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <utime.h>
 void archive(char *fn);
 //void unarchive(char *fn);
 char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
 char * two_args(char * a);
 char * three_args(char * a, char * b);
-int list_dir(void);
+struct dirent ** list_dir(void);
 void remove_newline(char *str);
 void create_dir(char *fn);
+void archive_all(char *archive_name, struct dirent **file_list, int num_files);
+void archive_select(char *archive_name, char **file_list, int num_files);
 
 struct header {
     unsigned int uid;
@@ -107,7 +110,7 @@ char *two_args(char *c)
 
     char buf[50];
     
-    printf("Archived file name has not been provided. Please enter name of archived file:\n");
+    printf("Archived file name has not been provided. Please enter name of new archive file:\n");
     fgets(buf, sizeof(buf), stdin);
     char * name = give_proper_name(buf);
 
@@ -219,9 +222,9 @@ struct dirent **list_dir(void)
                    buf,
                    fs.st_size);
                    
-                   free(namelist[i]);
+                  
                 }
-                free(namelist);
+              
                 
                 return namelist;
     }
@@ -235,39 +238,125 @@ void remove_newline(char *str) {
 
 void archive(char *fn)
 {
-  
+
     int n;
     struct dirent **namelist = list_dir();
     n = sizeof(namelist)/sizeof(struct dirent**);
+
     printf("Please select which files to archive, type -1 to end prompt and begin archive.\n");
-    char **buf;
+    char **buf = malloc(n * sizeof(char *));
+    if (buf == NULL) {
+        perror("Failed to allocate memory");
+        return;
+    }
     char inter[50];
-    while (inter!="-1")
-    {
-    if (strcmp(inter,"*")){
-    archive_files(fn,buf, sizeof(namelist)/sizeof(struct dirent**), namelist);
-        break;
-    }
+    int index = 0;
 
-    fgets(inter, sizeof(inter), stdin);
-    if (file_exists_in_current_dir(inter))
-    {
-    strcat(buf, inter);
-    }
+        while (1) {
+        fgets(inter, sizeof(inter), stdin);
+        remove_newline(inter);
 
-    }
-    if (inter=="-1")
-    {
-        if (buf == NULL)
-        {
-    fprintf(stderr, "Error: no files provided");
+        if (strcmp(inter, "-1") == 0) {
+            break;
         }
-        archive_files(fn, buf, sizeof(buf)/sizeof(char**), namelist);
 
+        if (strcmp(inter, "*") == 0) {
+            // Archive all files
+            archive_all(fn, namelist, n);
+            free(buf);
+            return;
+        }
+
+        if (file_exists_in_current_dir(inter)) {
+            buf[index] = strdup(inter); // Copy the file name
+            if (buf[index] == NULL) {
+                perror("Failed to allocate memory");
+                free(buf);
+                return;
+            }
+            index++;
+        } else {
+            printf("File '%s' not found. Please try again.\n", inter);
+        }
     }
 
+    if (index > 0) {
+        archive_select(fn, buf, index);
+    } else {
+        fprintf(stderr, "Error: no files provided\n");
+    }
+
+    // Free allocated memory
+    for (int i = 0; i < index; i++) {
+        free(buf[i]);
+    }
+    free(buf);
+
+    // Free namelist after use
+    for (int i = 0; i < n; i++) {
+        free(namelist[i]);
+    }
+    free(namelist);
 }
-void archive_files(char *archive_name, char **file_list, int num_files, struct dirent **file_list) {
+
+void archive_all(char *archive_name, struct dirent **file_list, int num_files) {
+    FILE *archive = fopen(archive_name, "wb");
+    if (!archive) {
+        perror("Failed to open archive file");
+        return;
+    }
+
+    // Create and write the archive header
+    struct header hdr;
+    hdr.uid = getuid();
+    struct passwd *pw = getpwuid(hdr.uid);
+    strncpy(hdr.owner, pw->pw_name, sizeof(hdr.owner));
+    hdr.n_files = num_files;
+
+    fwrite(&hdr, sizeof(hdr), 1, archive);
+
+    // Add each file to the archive
+    for (int i = 0; i < num_files; i++) {
+        struct stat st;
+        if (stat(file_list[i]->d_name, &st) != 0) {
+            perror("Failed to stat file");
+            continue;
+        }
+
+        struct file file_hdr;
+        file_hdr.size = st.st_size;
+        file_hdr.timestamp = st.st_mtime;
+        strncpy(file_hdr.file_name, file_list[i]->d_name, sizeof(file_hdr.file_name));
+        file_hdr.options = 0; // Assuming no compression for now
+
+        fwrite(&file_hdr, sizeof(file_hdr), 1, archive);
+
+        // Write the file data
+        FILE *file = fopen(file_list[i]->d_name, "rb");
+        if (!file) {
+            perror("Failed to open file");
+            continue;
+        }
+
+        char *buffer = malloc(file_hdr.size);
+        fread(buffer, 1, file_hdr.size, file);
+        fwrite(buffer, 1, file_hdr.size, archive);
+        free(buffer);
+
+        fclose(file);
+    }
+
+    fclose(archive);
+}
+
+
+
+void archive_select(char *archive_name, char **file_list, int num_files) {
+    if (file_list == NULL) {
+        fprintf(stderr, "Error: no files provided\n");
+        return;
+    }
+
     FILE *archive = fopen(archive_name, "wb");
     if (!archive) {
         perror("Failed to open archive file");
@@ -330,5 +419,79 @@ void create_dir(char *fn)
       
     } else {
         printf("Directory created successfully: %s\n", path);
+    }
+}
+
+void unarchive(char *archive_name, char *extract_dir) 
+{
+    FILE *archive = fopen(archive_name, "rb");
+    if (!archive) {
+        perror("Failed to open archive file");
+        return;
+    }
+
+    // Read the archive header
+    struct header hdr;
+    if (fread(&hdr, sizeof(hdr), 1, archive) != 1) {
+        perror("Failed to read archive header");
+        fclose(archive);
+        return;
+    }
+
+    // Create the extraction directory if provided
+    if (extract_dir) {
+        if (mkdir(extract_dir, 0700) == -1) {
+            perror("Failed to create extraction directory");
+            fclose(archive);
+            return;
+        }
+        chdir(extract_dir); // Change to the extraction directory
+    }
+
+    // Extract each file from the archive
+    for (unsigned int i = 0; i < hdr.n_files; i++) {
+        struct file file_hdr;
+        if (fread(&file_hdr, sizeof(file_hdr), 1, archive) != 1) {
+            perror("Failed to read file header");
+            break;
+        }
+
+        // Open the output file
+        FILE *file = fopen(file_hdr.file_name, "wb");
+        if (!file) {
+            perror("Failed to create file");
+            continue;
+        }
+
+        // Read and write the file data
+        char *buffer = malloc(file_hdr.size);
+        if (!buffer) {
+            perror("Failed to allocate memory");
+            fclose(file);
+            continue;
+        }
+
+        if (fread(buffer, 1, file_hdr.size, archive) != file_hdr.size) {
+            perror("Failed to read file data");
+            free(buffer);
+            fclose(file);
+            continue;
+        }
+
+        fwrite(buffer, 1, file_hdr.size, file);
+        free(buffer);
+        fclose(file);
+
+        // Restore the file's modification time
+        struct utimbuf utime_buf;
+        utime_buf.actime = file_hdr.timestamp; // Access time
+        utime_buf.modtime = file_hdr.timestamp; // Modification time
+        utime(file_hdr.file_name, &utime_buf);
+    }
+
+    fclose(archive);
+
+    if (extract_dir) {
+        chdir(".."); // Return to the original directory
     }
 }
