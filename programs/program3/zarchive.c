@@ -12,8 +12,8 @@
 void archive(char *fn);
 char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
-char * two_args(char * a);
-char * three_args(char * a, char * b);
+void two_args(char * a);
+void three_args(char * a, char * b);
 char ** list_dir(void);
 void remove_newline(char *str);
 void create_dir(char *fn);
@@ -34,8 +34,6 @@ struct file {
 
 int main(int argc, char **argv)
 {
-    char *archivename;
-
     if (argc == 2 || argc == 3 || argc==4)
     {
     /*If two arguments, we need to get the name of the file to zip/unzip.*/
@@ -73,7 +71,7 @@ int main(int argc, char **argv)
 
 
 /*We need to format for archive name, also ensure file does not exist for archiver and does exist for unarchiver.*/
-char *three_args(char *a, char *b)
+void three_args(char *a, char *b)
 {
     if (*a=='c' || *a=='x')
     {
@@ -87,7 +85,7 @@ char *three_args(char *a, char *b)
         else
         {
             fprintf(stderr, "Error: archived filename already exists.\n");
-            return NULL;
+            return;
         }
     }
 
@@ -99,17 +97,18 @@ char *three_args(char *a, char *b)
     else
     {   
     fprintf(stderr, "Error: file does not exist\n");
-    return NULL;
+    return ;
 }
 }
 }
 else{
     fprintf(stderr, "Usage: zarchive [x,c] filename\n");
 }
+return;
 }
 
      /*We need to ask the name of the file for both if branches.*/
-char *two_args(char *c)
+void two_args(char *c)
 {
     if (*c =='c' || *c =='x')
     {
@@ -127,7 +126,7 @@ char *two_args(char *c)
     if (file_exists_in_current_dir(name))
     {
         fprintf(stderr, "Error: archived filename already exists.\n");
-        return NULL;
+        return;
     }
         if (!file_exists_in_current_dir(name)){
         archive(name);
@@ -143,7 +142,7 @@ char *two_args(char *c)
     if (!file_exists_in_current_dir(buf))
     {
         fprintf(stderr, "Error: archived filename does not exist.\n");
-        return NULL;
+        return;
     }
     }
 }
@@ -151,6 +150,7 @@ char *two_args(char *c)
     {
     fprintf(stderr, "Usage: zarchive [x,c] filename\n");
 }
+return;
 }
 
 /*Check if string is formatted with '.z' extension.*/
@@ -197,7 +197,6 @@ bool file_exists_in_current_dir(const char *filename)
 }
 
 char **list_dir(void) {
-    DIR *dir;
     struct dirent **namelist;
     struct stat fs;
     int n;
