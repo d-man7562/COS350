@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include <utime.h>
+
 void archive(char *fn);
 char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
@@ -19,39 +20,44 @@ void remove_newline(char *str);
 void create_dir(char *fn);
 void archive_select(char *archive_name, char **file_list, int num_files);
 void unarchive(char *archive_name, char *extract_dir);
-struct header {
+
+struct header 
+{
     unsigned int uid;
     char owner[64];
     unsigned int n_files;
 };
 
-struct file {
+struct file 
+{
     size_t size;
     time_t timestamp;
     char file_name[256];
     unsigned int options;
 };
+    /*If two arguments, we need to get the name of the file to zip/unzip.*/
+        /*If three arguments, determine whether to archive or extract.*/
+         /*If four arguments, it must be to extract*/
+             /*Show user how to properly input command*/
+
 
 int main(int argc, char **argv)
 {
     if (argc == 2 || argc == 3 || argc==4)
     {
-    /*If two arguments, we need to get the name of the file to zip/unzip.*/
     if (argc == 2)
     {
         two_args(argv[1]);
         return 0;
     }
-    /*If three arguments, determine whether to archive or extract.*/
     if (argc == 3)
     {
         three_args(argv[1], argv[2]);
         return 0;
     }
-    /*If four arguments, it must be to extract*/
     if (argc==4)
     {
-       if (strcmp(argv[1],"c")==0){
+       if (strcmp(argv[1],"x")!=0){
         fprintf(stderr, "Usage: zarchive [x,c] filename extractdir\n");
         return 1;
        }
@@ -59,7 +65,7 @@ int main(int argc, char **argv)
         return 0;
     }
     }
-    /*Show user how to properly input command*/
+
     else
     {
         fprintf(stderr, "Usage: zarchive [x,c] filename\n");
@@ -73,11 +79,11 @@ int main(int argc, char **argv)
 /*We need to format for archive name, also ensure file does not exist for archiver and does exist for unarchiver.*/
 void three_args(char *a, char *b)
 {
-    if (*a=='c' || *a=='x')
+    if (strcmp(a,"c") || strcmp(a,"x"))
     {
         /*Format name with .z extension.*/
     char * name = give_proper_name(b);
-    if (*a == 'c')
+    if (strcmp(a,"c"))
     {
         if (!file_exists_in_current_dir(name)){
             archive(name);
@@ -89,7 +95,7 @@ void three_args(char *a, char *b)
         }
     }
 
-    if (*a == 'x')
+    if (strcmp(a,"x"))
     {
         if (file_exists_in_current_dir(b)){
         unarchive(b, NULL);
@@ -110,18 +116,18 @@ return;
      /*We need to ask the name of the file for both if branches.*/
 void two_args(char *c)
 {
-    if (*c =='c' || *c =='x')
+   if (strcmp(c,"c") || strcmp(c,"x"))
     {
 
         /*Buffer to input name of archive file.*/
     char buf[50];
-    
     printf("Archived file name has not been provided. Please enter name of new archive file:\n");
     fgets(buf, sizeof(buf), stdin);
+
     /*Format with .z extension.*/
     char * name = give_proper_name(buf);
 
-    if (*c == 'c')
+    if (strcmp(c,"c"))
     {
     if (file_exists_in_current_dir(name))
     {
@@ -132,7 +138,7 @@ void two_args(char *c)
         archive(name);
     }
 }
-    if (*c == 'x')
+if (strcmp(c,"x"))
     {
         if (file_exists_in_current_dir(buf)){
 
@@ -150,6 +156,7 @@ void two_args(char *c)
     {
     fprintf(stderr, "Usage: zarchive [x,c] filename\n");
 }
+
 return;
 }
 
@@ -214,8 +221,8 @@ char **list_dir(void) {
         exit(EXIT_FAILURE);
     }
 
+    /*Filter out . , ..*/
     for (int i = 0; i < n; i++) {
-        /*Filter out . , ..*/
         if (strcmp(namelist[i]->d_name, ".") == 0 || strcmp(namelist[i]->d_name, "..") == 0) {
             free(namelist[i]);
             continue;
@@ -280,8 +287,8 @@ void archive(char *fn)
             return;
         }
 
+        /*If name in intermediary is in directory, save it in buffer*/
         if (file_exists_in_current_dir(inter)) {
-            /*Copy the file name.*/
             buf[index] = strdup(inter); 
             if (buf[index] == NULL) {
                 perror("Failed to allocate memory");
@@ -338,10 +345,14 @@ void archive_select(char *archive_name, char **file_list, int num_files) {
         file_hdr.timestamp = st.st_mtime;
         strncpy(file_hdr.file_name, file_list[i], sizeof(file_hdr.file_name));
         file_hdr.options = 0;
-
         fwrite(&file_hdr, sizeof(file_hdr), 1, archive);
-
-        /*Write file data.*/
+        
+        /*Print archived file info*/
+         char buf[80];
+         strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&st.st_mtime));
+         printf("%-30s %-20s %-10ld\n", file_hdr.file_name, buf, file_hdr.size);
+        
+         /*Write file data.*/
         FILE *file = fopen(file_list[i], "rb");
         if (!file) {
             perror("Failed to open file");
@@ -355,10 +366,14 @@ void archive_select(char *archive_name, char **file_list, int num_files) {
         free(buffer);
 
         fclose(file);
-    }
 
-    fclose(archive);
+       
+    }
+   
+   
+  
 }
+
 
 void create_dir(char *fn)
 {
@@ -470,3 +485,20 @@ bool is_ascii_file(const char *filename) {
     fclose(file);
     return 1; 
 }
+
+archive_and_compress(archive_name)
+create and write archive header
+create file header
+write file header
+if file is ascii
+compress file
+write file
+end
+
+in unarchive:
+if option==1
+decompress:
+read file size from header
+read binary
+decompresss
+write uncompressed to extracted file
