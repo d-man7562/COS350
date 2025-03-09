@@ -1,0 +1,64 @@
+Script started on 2025-03-09 16:18:54-0400
+domenic.mancuso@honeybee:~/COS350/programs/program3$ ls
+Makefile  README.txt  Script.txt  zarchive  zarchive.c	zarchive.o
+domenic.mancuso@honeybee:~/COS350/programs/program3$ mkdir test
+domenic.mancuso@honeybee:~/COS350/programs/program3$ cd test
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..[K[Kechoa[K asdfdsf > file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ echo asdfdsf > file1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive c g
+file                           2025-03-09 16:19:08  8         
+file1                          2025-03-09 16:19:09  8         
+Please select which files to archive, type -1 to end prompt and begin archive.
+file
+file- 1- 
+-1
+file                           2025-03-09 16:19:08  8         
+file1                          2025-03-09 16:19:09  8         
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..///[K[Kzarchive  [Kx fil[K[K[Kg.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+file  file1  g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ f[Krm file1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file1[Kls[K../zarchive x g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+file  file1  g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..[K./zarchive cz 
+Archived file name has not been provided. Please enter name of new archive file:
+g
+file                           2025-03-09 16:19:08  8         
+file1                          2025-03-09 16:19:09  8         
+Please select which files to archive, type -1 to end prompt and begin archive.
+file
+
+File '' not found. Please try again.
+f file1
+-1
+file                           2025-03-09 16:19:08  8         
+file1                          2025-03-09 16:19:09  8         
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+file  file1  g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ zarchive x g
+
+Command 'zarchive' not found, did you mean:
+
+  command 'garchive' from deb geda-utils
+  command 'parchive' from deb parchive
+
+Try: apt install <deb name>
+
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ zarchive x g[1@.[1@.[1@/
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+'9 16:19:08'   file   file1   g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive x g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+'9 16:19:08'   file   file1   g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm 9\ 16\:19\:08 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive x g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+'9 16:19:08'   file   g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat file
+��&l��
+Script done on 2025-03-09 16:22:48-0400

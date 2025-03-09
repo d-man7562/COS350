@@ -10,7 +10,9 @@
 #include <time.h>
 #include <utime.h>
 
-void archive(char *fn);
+#include <fcntl.h>
+
+void archive(char *fn, int flag);
 char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
 void two_args(char * a);
@@ -18,8 +20,10 @@ void three_args(char * a, char * b);
 char ** list_dir(void);
 void remove_newline(char *str);
 void create_dir(char *fn);
-void archive_select(char *archive_name, char **file_list, int num_files);
+void archive_select(char *archive_name, char **file_list, int num_files, int flag);
 void unarchive(char *archive_name, char *extract_dir);
+int is_ascii_file(FILE *filename);
+int flag = 0;
 
 struct header 
 {
@@ -53,7 +57,7 @@ int main(int argc, char **argv)
     if (argc == 3)
     {
         three_args(argv[1], argv[2]);
-        return 0;
+        
     }
     if (argc==4)
     {
@@ -79,14 +83,21 @@ int main(int argc, char **argv)
 /*We need to format for archive name, also ensure file does not exist for archiver and does exist for unarchiver.*/
 void three_args(char *a, char *b)
 {
-    if (strcmp(a,"c") || strcmp(a,"x"))
+     if (strcmp(a,"cz") ==0 || (strcmp(a,"zc")==0))
+     {
+        flag = 1;
+        char * newname = give_proper_name(b);
+        archive(newname, flag);
+        return;
+     }
+    if (strcmp(a,"c") ==0 || strcmp(a,"x")==0)
     {
         /*Format name with .z extension.*/
     char * name = give_proper_name(b);
-    if (strcmp(a,"c"))
+    if (strcmp(a,"c")==0)
     {
         if (!file_exists_in_current_dir(name)){
-            archive(name);
+            archive(name,flag);
         }
         else
         {
@@ -95,7 +106,7 @@ void three_args(char *a, char *b)
         }
     }
 
-    if (strcmp(a,"x"))
+    if (strcmp(a,"x")==0)
     {
         if (file_exists_in_current_dir(b)){
         unarchive(b, NULL);
@@ -116,7 +127,13 @@ return;
      /*We need to ask the name of the file for both if branches.*/
 void two_args(char *c)
 {
-   if (strcmp(c,"c") || strcmp(c,"x"))
+     if (strcmp(c,"cz")==0  || (strcmp(c,"zc")==0))
+     {
+        flag = 1;
+    
+     }
+
+   if (strcmp(c,"c")==0 || strcmp(c,"x") == 0 || strcmp(c,"cz")==0  || (strcmp(c,"zc")==0))
     {
 
         /*Buffer to input name of archive file.*/
@@ -127,25 +144,29 @@ void two_args(char *c)
     /*Format with .z extension.*/
     char * name = give_proper_name(buf);
 
-    if (strcmp(c,"c"))
+    if (strcmp(c,"c")==0 || strcmp(c,"cz")==0  || (strcmp(c,"zc")==0))
     {
+        give_proper_name(name);
     if (file_exists_in_current_dir(name))
     {
         fprintf(stderr, "Error: archived filename already exists.\n");
         return;
     }
-        if (!file_exists_in_current_dir(name)){
-        archive(name);
+       else{
+
+       
+        archive(name,flag);
     }
 }
-if (strcmp(c,"x"))
+if (strcmp(c,"x")==0)
     {
+          give_proper_name(buf);
         if (file_exists_in_current_dir(buf)){
 
             unarchive(buf, NULL);
         }
     
-    if (!file_exists_in_current_dir(buf))
+   else
     {
         fprintf(stderr, "Error: archived filename does not exist.\n");
         return;
@@ -163,16 +184,15 @@ return;
 /*Check if string is formatted with '.z' extension.*/
 char *give_proper_name(char *name)
 {
-    char * newname = name;
+    char *newname = name;
     remove_newline(newname);
     int len = strlen(newname);
-    if (len >= 2 && newname[len - 2] != '.' && newname[len - 1] != 'z')
+    
+    // Check if name already ends with .z
+    if (len < 2 || newname[len - 2] != '.' || newname[len - 1] != 'z')
     {
-        char zappend [3];
-        zappend[0]='.';
-        zappend[1]= 'z';
-        zappend[2] = '\0';
-        newname = strcat(newname, zappend);
+        char zappend[3] = {'.', 'z', '\0'};
+        strcat(newname, zappend);
     }
     return newname;
 }
@@ -255,7 +275,7 @@ void remove_newline(char *str) {
 }
 
 
-void archive(char *fn)
+void archive(char *fn,int flag)
 {
 
     int n;
@@ -282,7 +302,7 @@ void archive(char *fn)
 
         if (strcmp(inter, "*") == 0) {
             /*Archive all files.*/
-            archive_select(fn, namelist, n);
+            archive_select(fn, namelist, n, flag);
             free(buf);
             return;
         }
@@ -302,7 +322,7 @@ void archive(char *fn)
     }
 
     if (index > 0) {
-        archive_select(fn, buf, index);
+        archive_select(fn, buf, index, flag);
     } else {
         fprintf(stderr, "Error: no files provided\n");
     }
@@ -311,7 +331,7 @@ void archive(char *fn)
 
 
 
-void archive_select(char *archive_name, char **file_list, int num_files) {
+void archive_select(char *archive_name, char **file_list, int num_files, int flag) {
     if (file_list == NULL) {
         fprintf(stderr, "Error: no files provided\n");
         return;
@@ -352,12 +372,60 @@ void archive_select(char *archive_name, char **file_list, int num_files) {
          strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&st.st_mtime));
          printf("%-30s %-20s %-10ld\n", file_hdr.file_name, buf, file_hdr.size);
         
+
+
          /*Write file data.*/
         FILE *file = fopen(file_list[i], "rb");
         if (!file) {
             perror("Failed to open file");
             continue;
         }
+        /*For compression.*/
+        if (flag==1 && is_ascii_file(file)==1)
+        {
+            int input_fd = open(file_list[i], O_RDONLY);
+          if (input_fd == -1) {
+            perror("Error opening input file");
+            exit(1);
+    }
+ 
+    unsigned char in_buf[8];
+    unsigned char out_buf[7];
+    ssize_t bytes_read;
+	/*Read maximum 8 byte chunks*/
+    while ((bytes_read = read(input_fd, in_buf, 8)) > 0) {
+	    /*Check top bit for proper encoding format*/
+  	    for (ssize_t i = 0; i < bytes_read; i++) {
+       
+        if (in_buf[i] >> 7 == 1) {
+            fprintf(stderr, "Error: incompatible encoding\n");
+        close(input_fd);
+        }
+  /*Zero-pad empty bytes*/
+        for (ssize_t i = bytes_read; i < 8; i++) {
+            in_buf[i] = 0;
+	}
+
+	        /*Pack bytes*/
+        out_buf[0] = (in_buf[0] << 1) | (in_buf[1] >> 6);
+        out_buf[1] = (in_buf[1] << 2) | (in_buf[2] >> 5);
+        out_buf[2] = (in_buf[2] << 3) | (in_buf[3] >> 4);
+        out_buf[3] = (in_buf[3] << 4) | (in_buf[4] >> 3);
+        out_buf[4] = (in_buf[4] << 5) | (in_buf[5] >> 2);
+        out_buf[5] = (in_buf[5] << 6) | (in_buf[6] >> 1);
+        out_buf[6] = (in_buf[6] << 7) | (in_buf[7] & 0x7F);
+
+        /*Calculate how many output bytes needed to write*/
+        size_t out_bytes = (bytes_read * 7 + 7) / 8;
+       fwrite( out_buf,sizeof(out_bytes), out_bytes, archive);
+    }
+    file_hdr.options = 1;
+        
+        }
+    }
+        else
+        {
+
        
 
         char *buffer = malloc(file_hdr.size);
@@ -366,31 +434,13 @@ void archive_select(char *archive_name, char **file_list, int num_files) {
         free(buffer);
 
         fclose(file);
+        }
 
        
     }
-   
-   
-  
-}
-
-
-void create_dir(char *fn)
-{
- char path[256]; 
-
-    strcpy(path, "./"); 
-    strcat(path, fn);   
-    remove_newline(path);
-    
-    if (mkdir(path, 0700) == -1) {
-        perror("Error creating directory");
-      
-    } else {
-        printf("Directory created successfully: %s\n", path);
+    return;
     }
-}
-
+   
 void unarchive(char *archive_name, char *extract_dir) 
 {
     FILE *archive = fopen(archive_name, "rb");
@@ -432,6 +482,52 @@ void unarchive(char *archive_name, char *extract_dir)
             perror("Failed to create file");
             continue;
         }
+    /*To decompress*/
+        if (file_hdr.options ==1)
+    {
+    /*Read original file size from header*/
+    off_t original_size = file_hdr.size;
+   unsigned char in_buf[7];
+    unsigned char out_buf[8];
+    off_t bytes_remaining = original_size;
+    
+    while (bytes_remaining > 0) {
+        /*Calculate how many compressed bytes to read*/
+        ssize_t to_read = (bytes_remaining >= 8) ? 7 : ((bytes_remaining * 7 + 7) / 8);
+        ssize_t bytes_read = fread(in_buf, 1, to_read, archive);
+        
+        if (bytes_read <= 0) break;
+
+        /*Zero-pad empty bytes*/
+        for (ssize_t i = bytes_read; i < 7; i++) {
+            in_buf[i] = 0;
+        }
+
+        /*Unpack bytes*/
+        out_buf[0] = in_buf[0] >> 1;
+        out_buf[1] = ((in_buf[0] & 0x01) << 6) | (in_buf[1] >> 2);
+        out_buf[2] = ((in_buf[1] & 0x03) << 5) | (in_buf[2] >> 3);
+        out_buf[3] = ((in_buf[2] & 0x07) << 4) | (in_buf[3] >> 4);
+        out_buf[4] = ((in_buf[3] & 0x0F) << 3) | (in_buf[4] >> 5);
+        out_buf[5] = ((in_buf[4] & 0x1F) << 2) | (in_buf[5] >> 6);
+        out_buf[6] = ((in_buf[5] & 0x3F) << 1) | (in_buf[6] >> 7);
+        out_buf[7] = in_buf[6] & 0x7F;
+
+/* Calculate how many uncompressed bytes to write */
+        size_t to_write = (bytes_remaining < 8) ? bytes_remaining : 8;
+        
+        /* Write decompressed data */
+        fwrite(out_buf, 1, to_write, file);
+        
+        /* Update bytes remaining */
+        bytes_remaining -= to_write;
+    }
+
+    }  
+    
+        if (file_hdr.options ==0)
+{
+
 
         /*Read, write file data.*/
         char *buffer = malloc(file_hdr.size);
@@ -458,7 +554,8 @@ void unarchive(char *archive_name, char *extract_dir)
         utime_buf.modtime = file_hdr.timestamp; 
         utime(file_hdr.file_name, &utime_buf);
     }
-
+    }
+    
     fclose(archive);
     /*Return to original directory.*/
     if (extract_dir) {
@@ -466,25 +563,59 @@ void unarchive(char *archive_name, char *extract_dir)
     }
 }
 
-bool is_ascii_file(const char *filename) {
-    FILE *file = fopen(filename, "rb");
-    if (!file) return 0;
+int is_ascii_file(FILE *filename) {
+    //FILE *file = fopen(filename, "rb");
+    //if (!file) return 0;
     
     unsigned char buffer[4096];
     size_t bytes_read;
     
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+    while ((bytes_read = fread(buffer, 1, sizeof(buffer), filename)) > 0) {
         for (size_t i = 0; i < bytes_read; i++) {
             if (buffer[i] >> 7) {
-                fclose(file);
+               printf("Not an ASCII file\n");
+               // fclose(file);
                 return 0; 
             }
         }
     }
     
-    fclose(file);
+    //fclose(file);
     return 1; 
 }
+
+void create_dir(char *fn)
+{
+ char path[256]; 
+
+    strcpy(path, "./"); 
+    strcat(path, fn);   
+    remove_newline(path);
+    
+    if (mkdir(path, 0700) == -1) {
+        perror("Error creating directory");
+      
+    } else {
+        printf("Directory created successfully: %s\n", path);
+    }
+}
+
+
+   
+   
+  
+
+/*
+    in cases
+    check if cz or zc 
+    flag = 1
+    in archive 
+    flag = 1
+    in archive select
+    if flag = 1
+    if file is ascii
+    print file header 
+
 
 archive_and_compress(archive_name)
 create and write archive header
@@ -502,3 +633,4 @@ read file size from header
 read binary
 decompresss
 write uncompressed to extracted file
+*/
