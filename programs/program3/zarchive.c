@@ -17,12 +17,12 @@ char *give_proper_name(char *name);
 bool file_exists_in_current_dir(const char *filename);
 void two_args(char * a);
 void three_args(char * a, char * b);
-char ** list_dir(void);
+struct dirent **list_dir(int *file_count);
 void remove_newline(char *str);
 void create_dir(char *fn);
 void archive_select(char *archive_name, char **file_list, int num_files, int flag);
 void unarchive(char *archive_name, char *extract_dir);
-int is_ascii_file(FILE *filename);
+int is_ascii_file(FILE *filename, const char *file);
 int flag = 0;
 
 struct header 
@@ -188,7 +188,7 @@ char *give_proper_name(char *name)
     remove_newline(newname);
     int len = strlen(newname);
     
-    // Check if name already ends with .z
+    /*Check if name already ends with .z*/
     if (len < 2 || newname[len - 2] != '.' || newname[len - 1] != 'z')
     {
         char zappend[3] = {'.', 'z', '\0'};
@@ -223,48 +223,46 @@ bool file_exists_in_current_dir(const char *filename)
     return found;
 }
 
-char **list_dir(void) {
+struct dirent **list_dir(int *file_count) {
     struct dirent **namelist;
     struct stat fs;
     int n;
-    int valid_count = 0;
 
+    /*Get sorted directory using scandir*/
     n = scandir(".", &namelist, NULL, alphasort);
     if (n < 0) {
         perror("scandir");
         exit(EXIT_FAILURE);
     }
-    /*Allocate buffer to hold dirents*/
-    char **valid_files = malloc((n + 1) * sizeof(char *));
-    if (!valid_files) {
-        perror("malloc");
-        exit(EXIT_FAILURE);
-    }
 
-    /*Filter out . , ..*/
+    /*Print file information*/
+    int valid_count = 0;
     for (int i = 0; i < n; i++) {
-        if (strcmp(namelist[i]->d_name, ".") == 0 || strcmp(namelist[i]->d_name, "..") == 0) {
-            free(namelist[i]);
+        /*Skip . and ..*/
+        if (strcmp(namelist[i]->d_name, ".") == 0 || 
+            strcmp(namelist[i]->d_name, "..") == 0) {
             continue;
         }
-
+        
         if (stat(namelist[i]->d_name, &fs) < 0) {
             perror("stat");
-            free(namelist[i]);
             continue;
         }
-        /*Buffer for time string*/
-        char buf[80];
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&fs.st_mtime));
-        printf("%-30s %-20s %-10ld\n", namelist[i]->d_name, buf, fs.st_size);
         
-        valid_files[valid_count++] = namelist[i]->d_name;
+        /*Only count regular files*/
+        if (S_ISREG(fs.st_mode)) {
+            /*Buffer for time string*/
+            char buf[80];
+            strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&fs.st_mtime));
+            printf("%-30s %-20s %-10ld\n", namelist[i]->d_name, buf, fs.st_size);
+            valid_count++;
+        }
     }
-    /*Free the extra index*/
-    valid_files[valid_count] = NULL; 
-    free(namelist); 
     
-    return valid_files;
+    /*Set the count of valid files*/
+    *file_count = valid_count;
+    
+    return namelist;
 }
 
 void remove_newline(char *str) {
@@ -278,9 +276,9 @@ void remove_newline(char *str) {
 void archive(char *fn,int flag)
 {
 
-    int n;
-    char **namelist = list_dir();
-    n = sizeof(namelist)/sizeof(char*);
+    int file_count = 0;
+    struct dirent **namelist = list_dir(&file_count);
+    int n = file_count;
 
     printf("Please select which files to archive, type -1 to end prompt and begin archive.\n");
     char **buf = malloc(n * sizeof(char *));
@@ -301,11 +299,37 @@ void archive(char *fn,int flag)
         }
 
         if (strcmp(inter, "*") == 0) {
-            /*Archive all files.*/
-            archive_select(fn, namelist, n, flag);
-            free(buf);
-            return;
+            /*Create a temporary array for all valid filenames*/
+        char **all_files = malloc(file_count * sizeof(char *));
+        
+        int valid_index = 0;
+        for (int i = 0; namelist[i] != NULL; i++) {
+           if (namelist[i] != NULL && strcmp(namelist[i]->d_name, ".") != 0 && strcmp(namelist[i]->d_name, "..") != 0) {
+                
+                struct stat fs;
+                if (stat(namelist[i]->d_name, &fs) == 0 && S_ISREG(fs.st_mode)) {
+                    all_files[valid_index++] = strdup(namelist[i]->d_name);
+                }
+            }
         }
+        
+        archive_select(fn, all_files, valid_index, flag);
+        
+        /*Free all_files*/
+        for (int i = 0; i < valid_index; i++) {
+            free(all_files[i]);
+        }
+        free(all_files);
+        
+        /*Free namelist*/
+        for (int i = 0; namelist[i] != NULL; i++) {
+            free(namelist[i]);
+        }
+        free(namelist);
+        
+        free(buf);
+        return;
+    }
 
         /*If name in intermediary is in directory, save it in buffer*/
         if (file_exists_in_current_dir(inter)) {
@@ -381,12 +405,25 @@ void archive_select(char *archive_name, char **file_list, int num_files, int fla
             continue;
         }
         /*For compression.*/
-        if (flag==1 && is_ascii_file(file)==1)
+        if (flag==1)
         {
-            int input_fd = open(file_list[i], O_RDONLY);
+            if (is_ascii_file(file, file_list[i])!=1){
+                fclose(file);
+                continue;
+            }
+    fseek(file,0,SEEK_SET);
+    file_hdr.options = 1;
+
+    long current_pos = ftell(archive);
+    fseek(archive, -sizeof(file_hdr), SEEK_CUR);
+    fwrite(&file_hdr, sizeof(file_hdr), 1, archive);
+    fseek(archive, current_pos, SEEK_SET);
+
+            int input_fd = fileno(file);
           if (input_fd == -1) {
             perror("Error opening input file");
-            exit(1);
+            fclose(file);
+            continue;
     }
  
     unsigned char in_buf[8];
@@ -400,6 +437,9 @@ void archive_select(char *archive_name, char **file_list, int num_files, int fla
         if (in_buf[i] >> 7 == 1) {
             fprintf(stderr, "Error: incompatible encoding\n");
         close(input_fd);
+        fclose(file);
+        return;
+        }
         }
   /*Zero-pad empty bytes*/
         for (ssize_t i = bytes_read; i < 8; i++) {
@@ -417,12 +457,12 @@ void archive_select(char *archive_name, char **file_list, int num_files, int fla
 
         /*Calculate how many output bytes needed to write*/
         size_t out_bytes = (bytes_read * 7 + 7) / 8;
-       fwrite( out_buf,sizeof(out_bytes), out_bytes, archive);
+       fwrite( out_buf,1, out_bytes, archive);
     }
-    file_hdr.options = 1;
+    fclose(file);
         
         }
-    }
+    
         else
         {
 
@@ -474,8 +514,13 @@ void unarchive(char *archive_name, char *extract_dir)
         if (fread(&file_hdr, sizeof(file_hdr), 1, archive) != 1) {
             perror("Failed to read file header");
             break;
+
+        if (file_hdr.size == 0) {
+    printf("Skipping empty file: %s\n", file_hdr.file_name);
+    continue;
         }
 
+}
         /*Create the output file using header*/
         FILE *file = fopen(file_hdr.file_name, "wb");
         if (!file) {
@@ -522,7 +567,7 @@ void unarchive(char *archive_name, char *extract_dir)
         /* Update bytes remaining */
         bytes_remaining -= to_write;
     }
-
+    fclose(file);
     }  
     
         if (file_hdr.options ==0)
@@ -563,9 +608,8 @@ void unarchive(char *archive_name, char *extract_dir)
     }
 }
 
-int is_ascii_file(FILE *filename) {
-    //FILE *file = fopen(filename, "rb");
-    //if (!file) return 0;
+int is_ascii_file(FILE *filename, const char *file) {
+   
     
     unsigned char buffer[4096];
     size_t bytes_read;
@@ -573,14 +617,13 @@ int is_ascii_file(FILE *filename) {
     while ((bytes_read = fread(buffer, 1, sizeof(buffer), filename)) > 0) {
         for (size_t i = 0; i < bytes_read; i++) {
             if (buffer[i] >> 7) {
-               printf("Not an ASCII file\n");
-               // fclose(file);
+               printf("Not an ASCII file: %s\n", file);
                 return 0; 
             }
         }
     }
     
-    //fclose(file);
+  
     return 1; 
 }
 
@@ -599,38 +642,3 @@ void create_dir(char *fn)
         printf("Directory created successfully: %s\n", path);
     }
 }
-
-
-   
-   
-  
-
-/*
-    in cases
-    check if cz or zc 
-    flag = 1
-    in archive 
-    flag = 1
-    in archive select
-    if flag = 1
-    if file is ascii
-    print file header 
-
-
-archive_and_compress(archive_name)
-create and write archive header
-create file header
-write file header
-if file is ascii
-compress file
-write file
-end
-
-in unarchive:
-if option==1
-decompress:
-read file size from header
-read binary
-decompresss
-write uncompressed to extracted file
-*/

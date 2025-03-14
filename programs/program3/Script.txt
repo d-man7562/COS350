@@ -1,64 +1,104 @@
-Script started on 2025-03-09 16:18:54-0400
-domenic.mancuso@honeybee:~/COS350/programs/program3$ ls
-Makefile  README.txt  Script.txt  zarchive  zarchive.c	zarchive.o
-domenic.mancuso@honeybee:~/COS350/programs/program3$ mkdir test
+Script started on 2025-03-14 11:05:26-0400
 domenic.mancuso@honeybee:~/COS350/programs/program3$ cd test
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..[K[Kechoa[K asdfdsf > file
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ echo asdfdsf > file1
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive c g
-file                           2025-03-09 16:19:08  8         
-file1                          2025-03-09 16:19:09  8         
-Please select which files to archive, type -1 to end prompt and begin archive.
-file
-file- 1- 
--1
-file                           2025-03-09 16:19:08  8         
-file1                          2025-03-09 16:19:09  8         
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..///[K[Kzarchive  [Kx fil[K[K[Kg.z
 domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-file  file1  g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ f[Krm file1
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file1[Kls[K../zarchive x g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-file  file1  g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ..[K./zarchive cz 
-Archived file name has not been provided. Please enter name of new archive file:
-g
-file                           2025-03-09 16:19:08  8         
-file1                          2025-03-09 16:19:09  8         
-Please select which files to archive, type -1 to end prompt and begin archive.
-file
-
-File '' not found. Please try again.
-f file1
--1
-file                           2025-03-09 16:19:08  8         
-file1                          2025-03-09 16:19:09  8         
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-file  file1  g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ zarchive x g
-
-Command 'zarchive' not found, did you mean:
-
-  command 'garchive' from deb geda-utils
-  command 'parchive' from deb parchive
-
-Try: apt install <deb name>
-
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ zarchive x g[1@.[1@.[1@/
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-'9 16:19:08'   file   file1   g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive x g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-'9 16:19:08'   file   file1   g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm 9\ 16\:19\:08 
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file1
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive x g.z
-domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
-'9 16:19:08'   file   g.z
+file  file1  new_dir  test.txt
 domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat file
-��&l��
-Script done on 2025-03-09 16:22:48-0400
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat file1
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../xar[K[K[Kzartchive[K[K[K[K[K[Kchive c archive1
+file                           2025-03-14 10:21:10  5         
+file1                          2025-03-14 10:21:10  5         
+test.txt                       2025-03-13 23:09:44  14541     
+Please select which files to archive, type -1 to end prompt and begin archive.
+*
+file                           2025-03-14 10:21:10  5         
+file1                          2025-03-14 10:21:10  5         
+test.txt                       2025-03-13 23:09:44  14541     
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+archive1.z  file  file1  new_dir  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ mv archive1.z new_dir/
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cd new_dir/
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ls
+archive1.z  archive.z  file  file1  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm archive.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm file1 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm test.txt 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ls
+archive1.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ../../zarchive x archive1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ls
+archive1.z  file  file1  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ cat file
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ cat file1
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ at [K[K[Kcat [Ktest[K[K[K[K test.txt 
+Script started on 2025-03-13 23:08:05-0400
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm g.z
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm 9\ 16\:19\:08 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ rm file 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ touch [K[K[K[K[K[Kecho asdf > file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ echo asdf > file2[K1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ../zarchive cz fil[K[K[Karchive
+file                           2025-03-13 23:08:32  5         
+file1                          2025-03-13 23:08:36  5         
+test.txt                       2025-03-13 23:08:05  0         
+Please select which files to archive, type -1 to end prompt and begin archive.
+file
+file1
+-1
+file                           2025-03-13 23:08:32  5         
+file1                          2025-03-13 23:08:36  5         
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+archive.z  file  file1	test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls../zarchive cz archive[1P archive[1P archivex archive
+Failed to allocate memory: Cannot allocate memory
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+'3-13 23:08:32'   archive.z   file   file1   test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat file
+��&a@domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat file1
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cat 3-13\ 23\:08\:32 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ vim[K[K[Kvim 3-13\ 23\:08\:32 
+[?2004h[?1049h[22;0;0t[?1h=[?2004h[1;23r[?12h[?12l[27m[23m[29m[m[H[2J[?25l[23;1H"3-13 23:08:32" 0L, 0C[2;1H▽[6n[2;1H  [1;1H[>c]10;?]11;?[2;1H[94m~                                                                                                                         [3;1H~                                                                                                                         [4;1H~                                                                                                                         [5;1H~                                                                                                                         [6;1H~                                                                                                                         [7;1H~                                                                                                                         [8;1H~                                                                                                                         [9;1H~                                                                                                                         [10;1H~                                                                                                                         [11;1H~                                                                                                                         [12;1H~                                                                                                                         [13;1H~                                                                                                                         [14;1H~                                                                                                                         [15;1H~                                                                                                                         [16;1H~                                                                                                                         [17;1H~                                                                                                                         [18;1H~                                                                                                                         [19;1H~                                                                                                                         [20;1H~                                                                                                                         [21;1H~                                                                                                                         [22;1H~                                                                                                                         [m[23;105H0,0-1[9CAll[1;1H[?25hP+q436f\P+q6b75\P+q6b64\P+q6b72\P+q6b6c\P+q2332\P+q2334\P+q2569\P+q2a37\P+q6b31\[?12$p[?25l[23;95H/[1;1H[23;96Hc[1;1H[23;97Hc[1;1H[23;98Hc[1;1H[23;99Hc[1;1H[23;100H/[1;1H[23;101Hc[1;1H[23;102Hc[1;1H[23;103Hc[1;1H[23;104Hc[1;1H[23;95H          [1;1H[?25h[?25l[23;95H/[1;1H[23;96H1[1;1H[23;97He[1;1H[23;98H1[1;1H[23;99He[1;1H[23;100H/[1;1H[23;101H1[1;1H[23;102He[1;1H[23;103H1[1;1H[23;104He[1;1H[23;95H          [1;1H[27m[23m[29m[m[H[2J[2;1H[94m~                                                                                                                         [3;1H~                                                                                                                         [4;1H~                                                                                                                         [5;1H~                                                                                                                         [6;1H~                                                                                                                         [7;1H~                                                                                                                         [8;1H~                                                                                                                         [9;1H~                                                                                                                         [10;1H~                                                                                                                         [11;1H~                                                                                                                         [12;1H~                                                                                                                         [13;1H~                                                                                                                         [14;1H~                                                                                                                         [15;1H~                                                                                                                         [16;1H~                                                                                                                         [17;1H~                                                                                                                         [18;1H~                                                                                                                         [19;1H~                                                                                                                         [20;1H~                                                                                                                         [21;1H~                                                                                                                         [22;1H~                                                                                                                         [m[23;105H0,0-1[9CAll"3-13 23:08:32" 0L, 0C[1;1H[?25h[?25l[23;95H:[1;1H[23;1H[K[23;1H:[?2004h[?25hq[?25l[?25h[?25l[?2004l[23;1H[K[23;1H[?2004l[?1l>[?25h[?1049l[23;0;0tdomenic.mancuso@honeybee:~/COS350/programs/program3/test$ vim file
+[?2004h[?1049h[22;0;0t[?1h=[?2004h[1;23r[?12h[?12l[27m[23m[29m[m[H[2J[?25l[23;1H"file" [noeol][converted] 1L, 7C[2;1H▽[6n[2;1H  [1;1H[>c]10;?]11;?[1;1HÃÏ&a@
+[94m~                                                                                                                         [3;1H~                                                                                                                         [4;1H~                                                                                                                         [5;1H~                                                                                                                         [6;1H~                                                                                                                         [7;1H~                                                                                                                         [8;1H~                                                                                                                         [9;1H~                                                                                                                         [10;1H~                                                                                                                         [11;1H~                                                                                                                         [12;1H~                                                                                                                         [13;1H~                                                                                                                         [14;1H~                                                                                                                         [15;1H~                                                                                                                         [16;1H~                                                                                                                         [17;1H~                                                                                                                         [18;1H~                                                                                                                         [19;1H~                                                                                                                         [20;1H~                                                                                                                         [21;1H~                                                                                                                         [22;1H~                                                                                                                         [m[23;105H1,1[11CAll[1;1H[?25hP+q436f\P+q6b75\P+q6b64\P+q6b72\P+q6b6c\P+q2332\P+q2334\P+q2569\P+q2a37\P+q6b31\[?12$p[?25l[23;95H/[1;1H[23;96Hc[1;1H[23;97Hc[1;1H[23;98Hc[1;1H[23;99Hc[1;1H[23;100H/[1;1H[23;101Hc[1;1H[23;102Hc[1;1H[23;103Hc[1;1H[23;104Hc[1;1H[23;95H          [1;1H[?25h[?25l[23;95H/[1;1H[23;96H1[1;1H[23;97He[1;1H[23;98H1[1;1H[23;99He[1;1H[23;100H/[1;1H[23;101H1[1;1H[23;102He[1;1H[23;103H1[1;1H[23;104He[1;1H[23;95H          [1;1H[27m[23m[29m[m[H[2J[1;1HÃÏ&a@
+[94m~                                                                                                                         [3;1H~                                                                                                                         [4;1H~                                                                                                                         [5;1H~                                                                                                                         [6;1H~                                                                                                                         [7;1H~                                                                                                                         [8;1H~                                                                                                                         [9;1H~                                                                                                                         [10;1H~                                                                                                                         [11;1H~                                                                                                                         [12;1H~                                                                                                                         [13;1H~                                                                                                                         [14;1H~                                                                                                                         [15;1H~                                                                                                                         [16;1H~                                                                                                                         [17;1H~                                                                                                                         [18;1H~                                                                                                                         [19;1H~                                                                                                                         [20;1H~                                                                                                                         [21;1H~                                                                                                                         [22;1H~                                                                                                                         [m[23;105H1,1[11CAll"file" [noeol][converted] 1L, 7C[1;1H[?25h[?25l[23;95H:[1;1H[23;1H[K[23;1H:[?2004h[?25hq[?25l[?25h[?25l[?2004l[23;1H[K[23;1H[?2004l[?1l>[?25h[?1049l[23;0;0tdomenic.mancuso@honeybee:~/COS350/programs/program3/test$ exit
+
+Script done on 2025-03-13 23:09:44-0400
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ 2R0;276;0c10;rgb:cccc/cccc/cccc11;rgb:1e1e/1e1e/1e1e12;2$$y2R0;276;0c10;rgb:cccc/cccc/cccc11;rgb:1e1e/1e1e/1e1e12;2$yls[K[K[K[K[K[K[K^C
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ls
+archive1.z  file  file1  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rn archive1.z [K[K[K[K[K[K[K[K[K[K[K[K[Km archive1.z 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm file
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm fil1[Ke1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ rm test.txt 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ cd.[K ..
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls
+file  file1  new_dir  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cd .[K[K[K[K./[K./zarchive cz archive
+file                           2025-03-14 10:21:10  5         
+file1                          2025-03-14 10:21:10  5         
+test.txt                       2025-03-13 23:09:44  14541     
+Please select which files to archive, type -1 to end prompt and begin archive.
+file
+file1
+-1
+file                           2025-03-14 10:21:10  5         
+file1                          2025-03-14 10:21:10  5         
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ ls[K[Kls
+archive.z  file  file1	new_dir  test.txt
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ mv archive.z new_dir/
+domenic.mancuso@honeybee:~/COS350/programs/program3/test$ cd new_dir/
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ,.[K[K../../zarchive ar[Kx[K[Kx archive.z 
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ ls
+archive.z  file  file1
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ cat file
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ cat file1
+asdf
+domenic.mancuso@honeybee:~/COS350/programs/program3/test/new_dir$ exit
+
+Script done on 2025-03-14 11:07:35-0400
