@@ -1205,4 +1205,179 @@ domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ pskill -17 4804
        First the signals described in the original POSIX.1-1990 standard.[m
 [m
        Signal     Value     Action   Comment[m
-       ─────────────────────────�
+       ──────────────────────────────────────────────────────────────────────[m
+       [1mSIGHUP[0m        1       Term    Hangup detected on controlling terminal[m
+                                     or death of controlling process[m
+       [1mSIGINT[0m        2       Term    Interrupt from keyboard[m
+       [1mSIGQUIT[0m       3       Core    Quit from keyboard[m
+       [1mSIGILL[0m        4       Core    Illegal Instruction[m
+       [1mSIGABRT[0m       6       Core    Abort signal from [1mabort[0m(3)[m
+       [1mSIGFPE[0m        8       Core    Floating-point exception[m
+       [1mSIGKILL[0m       9       Term    Kill signal[m
+       [1mSIGSEGV[0m      11       Core    Invalid memory reference[m
+       [1mSIGPIPE[0m      13       Term    Broken pipe: write to pipe with no[m
+                                     readers; see [1mpipe[0m(7)[m
+       [1mSIGALRM[0m      14       Term    Timer signal from [1malarm[0m(2)[m
+       [1mSIGTERM[0m      15       Term    Termination signal[m
+       [1mSIGUSR1[0m   30,10,16    Term    User-defined signal 1[m
+       [1mSIGUSR2[0m   31,12,17    Term    User-defined signal 2[m
+[7m Manual page signal(7) line 139 (press h for help or q to quit)[27m[K[K [KESCESC[KOO[KBB[K       [1mSIGCHLD[0m   20,17,18    Ign     Child stopped or terminated[m
+[7m Manual page signal(7) line 140 (press h for help or q to quit)[27m[K[K [KESCESC[KOO[KBB[K       [1mSIGCONT[0m   19,18,25    Cont    Continue if stopped[m
+[7m Manual page signal(7) line 141 (press h for help or q to quit)[27m[K[K [KESCESC[KOO[KBB[K       [1mSIGSTOP[0m   17,19,23    Stop    Stop process[m
+[7m Manual page signal(7) line 142 (press h for help or q to quit)[27m[K[K[?1l>[?1049l[23;0;0tdomenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ep[Kxp14 &
+[2] 5628
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 4804 pts/6    00:01:05 exp14
+ 5628 pts/6    00:00:00 exp14
+ 5629 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -9 4804
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ l[Kps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:00:08 exp14
+ 5648 pts/6    00:00:00 ps
+[1]+  Killed                  exp14
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ;sl[K\[K[K[Kops[K[K[Kps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:00:55 exp14
+ 5759 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ l[Kkill -20 exp14
+bash: kill: exp14: arguments must be process or job IDs
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -20 exp14[K[K[K[K[K5628
+
+[2]+  Stopped                 exp14
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+ 5890 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+ 5926 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill =[K-[K1[K01[K[K[K-[K -17 ep[K[K5628
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+ 6003 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ls
+exp14  exp14.c	Makefile  README.txt
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ c[Kvim rEA[K[K[KREADME.txt 
+[?2004h[?1049h[22;0;0t[?1h=[?2004h[1;24r[?12h[?12l[27m[23m[29m[m[H[2J[?25l[24;1H"README.txt"< [noeol][ILLEGAL BYTE in line 1208] 1208L, 122880C[2;1H▽[6n[2;1H  [1;1H[>c]10;?]11;?[1;1HScript started on 2025-03-22 20:47:25-0400
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ cat exp14.c[34m^M[m
+#include <stdio.h>[34m^M
+^M[m
+int main(){[34m^M[m[6;9Hwhile (1);[34m^M[m
+}[34m^M[8;9H^M
+^M
+^M[m
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ex[14[34m^H^[[m[K[34m^H^[[m[K[34m^H^^[12;1H[[m[Kp14 &[34m^M[m
+[1] 3859[34m^M[m
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -2 3950[34m^H^[[m[K9[34m^^[15;1HM[m
+bash: kill: (3959) - No such process[34m^M[m
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -2 3959[34m^H^[[m[K[34m^HH[18;1H^[[m[K[34m^H^[[m[K9[34m^H^[[m[K859[34m^M[m
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps[34m^M[m
+  PID TTY[10CTIME CMD[34m^M[m
+ 3824 pts/6    00:00:00 bash[34m^M[m
+ 3910 pts/6    00:00:00 ps[34m^M[m
+[1]+  Interrupt[15Cexp14[34m^M[m[24;63H1,1[11CTop[1;1H[?25h[?25l[24;53H^[[1;1H[24;53H  [1;1H[24;53H^[[1;1H[24;53H  [1;1H[?25h[?25l[24;53H:[1;1H[24;1H[K[24;1H:[?2004h[?25hw[?25l[?25hq[?25l[?25h[?25l[1m[37m[41mE45: 'readonly' option is set (add ! to override)[?2004h[1;1H[m[24;63H1,1[11CTop[1;1H[?25h[?25l[24;53H:[1;1H[24;1H[K[24;1H:[?2004h[?25hq[?25l[?25h[?25l[?2004l[24;1H[K[24;1H[?2004l[?1l>[?25h[?1049l[23;0;0tdomenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ echo /COS350/experimeents/Experiment14^C
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ls
+exp14  exp14.c	Makefile  README.txt
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git add .
+git domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git commit -sm :[K"expe riment 4[K14"
+git [main fd27373] experiment 14
+ 4 files changed, 1221 insertions(+)
+ create mode 100644 experiments/Experiment14/Makefile
+ create mode 100644 experiments/Experiment14/README.txt
+ create mode 100755 experiments/Experiment14/exp14
+ create mode 100644 experiments/Experiment14/exp14.c
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git push -u origin
+To github.com:d-man7562/COS350.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'git@github.com:d-man7562/COS350.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git push -u origin
+To github.com:d-man7562/COS350.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'git@github.com:d-man7562/COS350.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git pull
+remote: Enumerating objects: 4, done.[K
+remote: Counting objects:  25% (1/4)[Kremote: Counting objects:  50% (2/4)[Kremote: Counting objects:  75% (3/4)[Kremote: Counting objects: 100% (4/4)[Kremote: Counting objects: 100% (4/4), done.[K
+remote: Compressing objects:  33% (1/3)[Kremote: Compressing objects:  66% (2/3)[Kremote: Compressing objects: 100% (3/3)[Kremote: Compressing objects: 100% (3/3), done.[K
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)[K
+Unpacking objects:  33% (1/3)   Unpacking objects:  66% (2/3)   Unpacking objects: 100% (3/3)   Unpacking objects: 100% (3/3), done.
+From github.com:d-man7562/COS350
+   bfc9c22..12d0c78  main       -> origin/main
+hint: Waiting for your editor to close the file... [?1049h[22;0;0t[1;24r(B[m[4l[?7h[39;49m[?1h=[?1h=[?1h=[?25l[39;49m(B[m[H[2J[22;33H(B[0;7m[ Reading File ](B[m[22;39H(B[0;7m 7 lines ](B[m[H(B[0;7m  GNU nano 2.9.3     /home/domenic.mancuso/COS350/.git/MERGE_MSG                [1;79H(B[m[23d(B[0;7m^G(B[m Get Help  (B[0;7m^O(B[m Write Out (B[0;7m^W(B[m Where Is  (B[0;7m^K(B[m Cut Text  (B[0;7m^J(B[m Justify   (B[0;7m^C(B[m Cur Pos[24d(B[0;7m^X(B[m Exit[14G(B[0;7m^R(B[m Read File (B[0;7m^\(B[m Replace   (B[0;7m^U(B[m Uncut Text(B[0;7m^T(B[m To Spell  (B[0;7m^_(B[m Go To Line[22d[3d[39;49m(B[mMerge branch 'main' of github.com:d-man7562/COS350 into main[5d[36m# Please enter a commit message to explain why this merge is necessary,[6d# especially if it merges an updated upstream into a topic branch.[7d#[8d# Lines starting with '#' will be ignored, and an empty message aborts[9d# the commit.[3d[39m(B[m[?12l[?25h[?25l[4d[?12l[?25h[?25l[5d[?12l[?25h[?25l[6d[?12l[?25h[?25l[7d[?12l[?25h[?25l[8d[?12l[?25h[?25l[9d[?12l[?25h[?25l[10d[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[1;71H(B[0;7mModified(B[m[10dh[?12l[?25h[?25lo[?12l[?25h[?25lp[?12l[?25h[?25lw[?12l[?25h[?25l [?12l[?25h[?25l[?12l[?25h[?25l [?12l[?25h[?25le[?12l[?25h[?25l [?12l[?25h[?25ln[?12l[?25h[?25lo[?12l[?25h[?25lt[?12l[?25h[?25lh[?12l[?25h[?25li[?12l[?25h[?25ln[?12l[?25h[?25lg[?12l[?25h[?25l[22d[K[10;14H[?12l[?25h[?25lb[?12l[?25h[?25la[?12l[?25h[?25l [?12l[?25h[?25l[?12l[?25h[?25ld[?12l[?25h[?25l [?12l[?25h[?25lh[?12l[?25h[?25la[?12l[?25h[?25lp[?12l[?25h[?25lp[?12l[?25h[?25le[?12l[?25h[?25ln[?12l[?25h[?25ls[?12l[?25h[?25l[11d[?12l[?25h[?25l[22;13H(B[0;7m[ line 9/10 (90%), col 1/1 (100%), char 313/314 (99%) ](B[m[11d[?12l[?25h[?25l[22d(B[0;7mSave modified buffer?  (Answering "No" will DISCARD changes.)                   [23;1H Y(B[m Yes[K[24d(B[0;7m N(B[m No  [14G   (B[0;7m^C(B[m Cancel[K[22;63H[?12l[?25h[?25l[23d(B[0;7m^G(B[m Get Help[23;21H(B[0;7mM-D(B[m DOS Format[41G(B[0;7mM-A(B[m Append[23;61H(B[0;7mM-B(B[m Backup File[24d(B[0;7m^C(B[m Cancel[17G    (B[0;7mM-M(B[m Mac Format[41G(B[0;7mM-P(B[m Prepend[24;61H(B[0;7m^T(B[m To Files[22d(B[0;7mFile Name to Write: /home/domenic.mancuso/COS350/.git/MERGE_MSG(B[m[22;64H[?12l[?25h[?25l[K[1;79H[1;71H(B[0;7m        (B[m[22;32H(B[0;7m[ Wrote 9 lines ](B[m[J[24;80H[?12l[?25h[24;1H[?1049l[23;0;0t[?1l>[KMerge made by the 'recursive' strategy.
+ README.md | 7 [32m+++++++[m
+ 1 file changed, 7 insertions(+)
+ create mode 100644 README.md
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git push -uy[K origin
+Counting objects: 10, done.
+Delta compression using up to 4 threads.
+Compressing objects:  10% (1/10)   Compressing objects:  20% (2/10)   Compressing objects:  30% (3/10)   Compressing objects:  40% (4/10)   Compressing objects:  50% (5/10)   Compressing objects:  60% (6/10)   Compressing objects:  70% (7/10)   Compressing objects:  80% (8/10)   Compressing objects:  90% (9/10)   Compressing objects: 100% (10/10)   Compressing objects: 100% (10/10), done.
+Writing objects:  10% (1/10)   Writing objects:  20% (2/10)   Writing objects:  30% (3/10)   Writing objects:  40% (4/10)   Writing objects:  50% (5/10)   Writing objects:  60% (6/10)   Writing objects:  70% (7/10)   Writing objects:  80% (8/10)   Writing objects:  90% (9/10)   Writing objects: 100% (10/10)   Writing objects: 100% (10/10), 13.43 KiB | 550.00 KiB/s, done.
+Total 10 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1)[Kremote: Resolving deltas: 100% (1/1), completed with 1 local object.[K
+To github.com:d-man7562/COS350.git
+   12d0c78..e9b69a8  main -> main
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git fetch
+git pul;lremote: Enumerating objects: 9, done.[K
+remote: Counting objects:  11% (1/9)[Kremote: Counting objects:  22% (2/9)[Kremote: Counting objects:  33% (3/9)[Kremote: Counting objects:  44% (4/9)[Kremote: Counting objects:  55% (5/9)[Kremote: Counting objects:  66% (6/9)[Kremote: Counting objects:  77% (7/9)[Kremote: Counting objects:  88% (8/9)[Kremote: Counting objects: 100% (9/9)[Kremote: Counting objects: 100% (9/9), done.[K
+remote: Compressing objects:  20% (1/5)[Kremote: Compressing objects:  40% (2/5)[Kremote: Compressing objects:  60% (3/5)[Kremote: Compressing objects:  80% (4/5)[Kremote: Compressing objects: 100% (5/5)[Kremote: Compressing objects: 100% (5/5), done.[K
+remote: Total 5 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)[K
+ Unpacking objects:  20% (1/5)   Unpacking objects:  40% (2/5)   Unpacking objects:  60% (3/5)    Unpacking objects:  80% (4/5)   Unpacking objects: 100% (5/5)   Unpacking objects: 100% (5/5), done.
+lFrom github.com:d-man7562/COS350
+   e9b69a8..fa25d3d  main       -> origin/main
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ git pull
+Updating e9b69a8..fa25d3d
+error: Your local changes to the following files would be overwritten by merge:
+	experiments/Experiment14/README.txt
+Please commit your changes or stash them before you merge.
+Aborting
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ exp14
+^C
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ^C
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ exp14 &
+[3] 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ;s[K[Kps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+20500 pts/6    00:00:02 exp14
+20505 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -16=[K[K7 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ l[Kps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+20500 pts/6    00:00:11 exp14
+20531 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ pskill -17 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -17 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -17 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -17 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ kill -17 20500
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ ps
+  PID TTY          TIME CMD
+ 3824 pts/6    00:00:00 bash
+ 5628 pts/6    00:01:05 exp14
+20500 pts/6    00:00:20 exp14
+20550 pts/6    00:00:00 ps
+domenic.mancuso@honeybee:~/COS350/experiments/Experiment14$ exit
+There are stopped jobs.
