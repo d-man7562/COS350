@@ -1,0 +1,3 @@
+Before taking this class I bought a Linux pocket book from the Harvard bookstore. I found wget to be 
+a helpful command while installing arch Linux, particularly when installing KDE plasma and other necessary things 
+without having access to a web browser. 
