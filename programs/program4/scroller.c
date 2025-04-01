@@ -249,7 +249,6 @@ void handle_keypress(char c) {
             break;
             /* Enter - toggle scrolling */
         case '\n': 
-        case '\r':
             if (scrolling_active) {
                 stop_timer();
                 scrolling_active = 0;
