@@ -166,7 +166,7 @@ void read_file(const char *filename) {
         exit(EXIT_FAILURE);
     }
     
-    /* Record starting position of each line to adjust line count */
+    /* Record position of each newline to adjust line count */
     line_positions[0] = 0;
     line_count = 1;
     for (i = 0; i < buffer_size; i++) {
