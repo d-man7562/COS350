@@ -19,7 +19,9 @@ parent_pid = getpid();
 fork();
 
 }
+usleep(1);
 }
-wait(&parent_pid);
-
+int status;
+wait(&status);
+return 0;
 }
