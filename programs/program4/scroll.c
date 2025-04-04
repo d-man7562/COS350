@@ -1,8 +1,3 @@
-/*
- * scroller.c - A text file viewer with continuous scrolling functionality
- * Similar to 'more' but with continuous scrolling capabilities
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
