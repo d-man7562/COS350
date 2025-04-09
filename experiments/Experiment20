@@ -11,3 +11,12 @@ fi
 # User specific aliases and functions
 export PATH=/usr/class/cos450/bin:$PATH
 
+
+==========================================
+When I first installed Linux almost a year ago I spent hours trying to modify
+my bashrc so that I could do a lot of cool things. For instance, I used echo,
+which piped into figlet which piped into lolcat to print a welcome message
+that appeared as bubble letters and multicolor. Also, I was able to install a
+library that turned images into ascii format (images made from ., and other characters)
+and then fetch a random funny image from a folder that would print to my command line
+everytime I open bash.
