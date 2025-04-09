@@ -1,0 +1,22 @@
+Oopsies, I read 'prompt' incorrectly.
+Here is my new .bashrc:
+# .bashrc
+echo WELCOME BACK DOMENIC!!
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+export PATH=/usr/class/cos450/bin:$PATH
+PS1="\033[0;32m${debian_chroot:+($debian_chroot)}\u@\h:\w\$: "
+~
+
+All that I did was make the prompt color (and everything else
+in the terminal) green. 
+The way I did this is in my command line, type 'echo $PS1', 
+then copy what it returns, and in .bashrc, set my PS1 variable to whatever
+it echoed along with an escape sequence before PS1's value.
