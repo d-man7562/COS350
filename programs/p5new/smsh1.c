@@ -9,16 +9,23 @@
 #include <unistd.h>
 #include <signal.h>
 #include "smsh.h"
+#include <string.h>
 
-#define	DFL_PROMPT	"> "
+#define	DFL_PROMPT	">: "
+
 
 int main()
 {
-  char	*cmdline, *prompt, **arglist;
+  char CWD_BUF[1024];
+  char	*cmdline, prompt[1100], **arglist;
   int	result;
   void	setup();
-
-  prompt = DFL_PROMPT ;
+  if (getcwd(CWD_BUF, sizeof(CWD_BUF)) != NULL)
+  {
+    sprintf(prompt, "%s%s",CWD_BUF, DFL_PROMPT);
+  }else{
+    perror("CWD error");
+  }
   setup();
 
   while ( (cmdline = next_cmd(prompt, stdin)) != NULL ){
