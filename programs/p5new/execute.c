@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
-
+#include <string.h>
 int execute(char *argv[])
 /*
  * purpose: run a program passing it arguments
@@ -19,6 +19,18 @@ int execute(char *argv[])
   if ( argv[0] == NULL )		/* nothing succeeds	*/
     return 0;
 
+   if (strcmp(argv[0], "exit") == 0) {
+        int exit_val = 0;    
+    if (argv[1] != NULL) {
+            exit_val = atoi(argv[1]);
+        }
+        exit(exit_val);
+   }
+
+     if (strcmp(argv[0], "cd") == 0) {
+     chdir("~");
+     }
+     
   if ( (pid = fork())  == -1 )
     perror("fork");
   else if ( pid == 0 ){

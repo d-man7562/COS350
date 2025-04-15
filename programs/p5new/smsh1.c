@@ -20,12 +20,14 @@ int main()
   char	*cmdline, prompt[1100], **arglist;
   int	result;
   void	setup();
+
   if (getcwd(CWD_BUF, sizeof(CWD_BUF)) != NULL)
   {
     sprintf(prompt, "%s%s",CWD_BUF, DFL_PROMPT);
   }else{
     perror("CWD error");
   }
+  
   setup();
 
   while ( (cmdline = next_cmd(prompt, stdin)) != NULL ){
