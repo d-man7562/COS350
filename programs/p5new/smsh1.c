@@ -32,6 +32,20 @@ int main()
 
   while ( (cmdline = next_cmd(prompt, stdin)) != NULL ){
     if ( (arglist = splitline(cmdline)) != NULL  ){
+      //getenv()
+      if (strcmp("cd",arglist[0]) == 0){
+        printf("cd\n");
+        if (arglist[1] == NULL){
+          if (chdir("HOME") != 0)
+          perror("Error changing to home directory\n");
+        }
+        else{
+          char * next_dir = arglist[1]; 
+          chdir(next_dir);
+        }
+
+      }
+
       result = execute(arglist);
       freelist(arglist);
     }

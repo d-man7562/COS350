@@ -26,10 +26,6 @@ int execute(char *argv[])
         }
         exit(exit_val);
    }
-
-     if (strcmp(argv[0], "cd") == 0) {
-     chdir("~");
-     }
      
   if ( (pid = fork())  == -1 )
     perror("fork");
