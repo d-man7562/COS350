@@ -1,0 +1,10 @@
+#!/bin/bash
+
+while true
+do
+echo Date:
+date
+sleep 2
+ls -l $PWD
+
+done
