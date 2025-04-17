@@ -10,8 +10,9 @@
 #include <signal.h>
 #include "smsh.h"
 #include <string.h>
+#include <errno.h>
 
-#define	DFL_PROMPT	">: "
+#define	DFL_PROMPT	" (smsh) "
 
 
 int main()
@@ -21,6 +22,8 @@ int main()
   int	result;
   void	setup();
 
+  
+  setup();
   if (getcwd(CWD_BUF, sizeof(CWD_BUF)) != NULL)
   {
     sprintf(prompt, "%s%s",CWD_BUF, DFL_PROMPT);
@@ -28,29 +31,46 @@ int main()
     perror("CWD error");
   }
   
-  setup();
-
   while ( (cmdline = next_cmd(prompt, stdin)) != NULL ){
     if ( (arglist = splitline(cmdline)) != NULL  ){
-      //getenv()
+   
       if (strcmp("cd",arglist[0]) == 0){
-        printf("cd\n");
+
         if (arglist[1] == NULL){
-          if (chdir("HOME") != 0)
+          char * env = getenv("HOME");
+          if (env==NULL){
+            perror("Error: HOME environment variable is not set");
+          }else{
+          if (chdir(env) != 0)
           perror("Error changing to home directory\n");
         }
+        }
         else{
-          char * next_dir = arglist[1]; 
-          chdir(next_dir);
+          
+         if (chdir(arglist[1]) != 0) {
+            perror("Error changing directory");
+        }
         }
 
-      }
+        freelist(arglist);
+        free(cmdline);
+        if (getcwd(CWD_BUF, sizeof(CWD_BUF)) != NULL)
+  {
+      sprintf(prompt, "%s%s",CWD_BUF, DFL_PROMPT);
+    }else{
+    perror("CWD error");
+    }
+        continue;
+        
+        }
+      
 
       result = execute(arglist);
       freelist(arglist);
     }
     free(cmdline);
   }
+  
   return 0;
 }
 

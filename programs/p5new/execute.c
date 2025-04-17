@@ -15,10 +15,9 @@ int execute(char *argv[])
 {
   int	pid ;
   int	child_info = -1;
-
+  int is_background = 0;
   if ( argv[0] == NULL )		/* nothing succeeds	*/
     return 0;
-
    if (strcmp(argv[0], "exit") == 0) {
         int exit_val = 0;    
     if (argv[1] != NULL) {
@@ -26,6 +25,12 @@ int execute(char *argv[])
         }
         exit(exit_val);
    }
+  for (int i = 0; argv[i] != NULL; i++){
+    if (strcmp(argv[i], "&") == 0 ){
+      argv[i] = NULL;
+      is_background = 1;
+    }
+  }
      
   if ( (pid = fork())  == -1 )
     perror("fork");
@@ -37,8 +42,18 @@ int execute(char *argv[])
     exit(1);
   }
   else {
-    if ( wait(&child_info) == -1 )
-      perror("wait");
+    if (is_background){
+      printf("In background: %s %d\n",argv[0],pid);
+    }
+    else{ if (waitpid(pid, &child_info, 0) == -1) {
+                perror("waitpid");
   }
+    }
+  }
+ int status;
+  pid_t background_pid;
+    while ((background_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        printf("Finished background process %d\n", background_pid);
+    }
   return child_info;
 }
