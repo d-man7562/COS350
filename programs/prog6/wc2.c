@@ -4,59 +4,49 @@
 #include <sys/wait.h>
 int main(int argc, char* argv[]){
 	char ** file_array;
-	
+	int printpipe[2], total = 0, count;	
 	if (argc<=1)
 		{fprintf(stderr,"Usage: <program name> <file>,...<file>\n");
 		return 1;}
 
 	if ((file_array = malloc(sizeof(char)*(argc-1))) == NULL)	{
-			fprintf(stderr, "malloc failed\n");
+			perror("malloc");
 			free(file_array);
-			return 1;	}
+			exit(1);	}
 	
 	for (int i = 1; i< argc; i++){	
 		file_array[i-1] = argv[i];
 		printf("%s\n",file_array[i-1]);
 
-	}
-	FILE * fp;
-	pid_t pid;	
 	
 	for (int i = 0; i < (sizeof(file_array)/sizeof(char*)); i++)	{
-		pid = fork();
-		if (pid < 0){
-		fprintf(stderr, "Fork failed\n");
-        	exit(1);
-		} else if (pid==0){
-		char * new_arr[5];
-		new_arr[0] = "wc1";
-		new_arr[1] = file_array[i];
-		new_arr[2] = ">";
-		new_arr[3] = "stdin";
-		new_arr[4] = NULL;
-		execvp("wc1",new_arr);
-		exit(0);
-		}
-	
-		else{
-		int status;
-	printf("Parent checking on child (non-blocking)...\n");
+		pit_t pid = fork();
+		 if (pid==0){
+			 close(printpipe[0]);
+			 //set to stdout
+			 if (dup2(printpipe[1],1)==-1){
+				 perror("dup2");
+				 exit(1);
+			 }
+			
+		char * new_array[] = {"wc1",file_array[i],NULL};
 
-	// Non-blocking wait
-	pid_t result = waitpid(pid, &status, WNOHANG);
-
-	if (result == 0) {
-	    printf("Child is still running\n");
-	    // Do other work...
-	} else if (result > 0) {
-   	 printf("Child (PID: %d) has terminated\n", result);
-	    // Process the status...
-	} else {
-	    perror("waitpid error");
-	}
+		execvp("wc1",new_array[i]);
 		
-	}
-	}
-	free(file_array);
-	return 0;
+		
+		}
+		else{
+			//read if parent
+			close(printpipe[1]);
+			close(countpipe[1]);
+
+				if (argc==2){
+				read(pipefd[0], &count, sizeof(count));
+				
+					printf("%d %s\n",count, argv[1]);
+				}
+				else{
+				
+				}
+		return 0;
 	}

@@ -4,7 +4,7 @@
 #include <fcntl.h>
 int wc_single_file(char * filename);
 int wc_multiple(char ** array, int argc);
-int total = 0;
+int total = 0, count = 0;
 int main(int argc, char* argv[]){
 	if (argc<=1)
 		{fprintf(stderr,"Usage: <program name> <file>,...<file>\n");
@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
 
 
 int wc_single_file (char * filename){
-	int fd, bytesread, count = 0;
+	int fd, bytesread;
 	char buf[4096];
 	fd = open(filename, O_RDONLY);
 	if (fd == -1){
@@ -40,11 +40,12 @@ int wc_single_file (char * filename){
 		}
 		close(fd);		
 		printf("%d %s\n",count, filename);
+		write(3, &count, sizeof(count));
 		return 0;
 		}
 
 int wc_multiple(char ** array,int argc){	
-        int fd, bytesread, count = 0;	
+        int fd, bytesread;	
         char buf[4096];
 	for (int i = 1; i< argc; i++){
 	count = bytesread = 0;
