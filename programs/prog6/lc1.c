@@ -40,7 +40,6 @@ int wc_single_file (char * filename){
 		}
 		close(fd);		
 		printf("%d %s\n",count, filename);
-		write(3, &count, sizeof(count));
 		return 0;
 		}
 

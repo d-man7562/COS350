@@ -1,0 +1,55 @@
+Script started on 2025-05-01 22:00:58-0400
+WELCOME BACK DOMENIC!!
+domenic.mancuso@honeybee:~/COS350/programs/prog6$: time lc1 f*
+ 175641 f1
+ 26175 f10
+ 345130 f2
+ 65336 f3
+ 211035 f4
+ 53835 f5
+ 33055 f6
+ 13426 f7
+ 16271 f8
+ 54544 f9
+ 994448 total
+
+real	0m0.067s
+user	0m0.041s
+sys	0m0.009s
+domenic.mancuso@honeybee:~/COS350/programs/prog6$: time lc2 f*
+26175 f10
+13426 f7
+65336 f3
+54544 f9
+175641 f1
+345130 f2
+211035 f4
+16271 f8
+33055 f6
+53835 f5
+994448 total
+
+real    0m0.031s
+user    0m0.034s
+sys     0m0.013s
+
+domenic.mancuso@honeybee:~/COS350/programs/prog6$: time lc3 f*
+f8 16271
+f7 13426
+f6 33055
+f10 26175
+f9 54544
+f5 53835
+f1 175641
+f3 65336
+f2 345130
+f4 211035
+994448 total
+
+real    0m0.095s
+user    0m0.137s
+sys     0m0.071s
+
+domenic.mancuso@honeybee:~/COS350/programs/prog6$: exit
+
+Script done on 2025-05-01 22:01:52-0400

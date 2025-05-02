@@ -17,20 +17,27 @@ void *thread_func(void * arg){
 	while (( bytesread = read(fd, buf, sizeof(buf))) > 0){
                 for (int i = 0; i < bytesread; i++){
                 if (buf[i] == '\n'){
-                count++;
+                count++;	
+		}
+		}
+	}
                pthread_mutex_lock(&mutex);
-	       	total++;
+	       	total+= count;
 		pthread_mutex_unlock(&mutex);
 
 
-}}}
+
 close(fd);
-printf("%s %d\n",filename, count);
+printf("%d %s\n",count, filename);
 return NULL;
 }
 
 int main(int argc, char * argv[]){
-pthread_t t[argc-1];
+if (argc<=1){
+	perror("usage: lc3 <filesname(s)>");
+	return 0;
+}
+	pthread_t t[argc-1];
 for (int i = 1; i < argc; i++){
 	
 	pthread_create(&t[i-1], NULL,thread_func, argv[i]);

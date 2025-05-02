@@ -11,7 +11,7 @@ int main(int argc, char * argv[]){
 	if (pipe(leakypipe) == -1) { fail("pipe failed", 1); }
 	int total = 0;
 	if (argc <= 1){
-		printf("usage: wc2 <filename, ...>\n");
+		printf("usage: lc2 <filename, ...>\n");
 		return 0;
 	}
 		
@@ -22,7 +22,7 @@ int main(int argc, char * argv[]){
 		close(leakypipe[0]); //close read
 		dup2(leakypipe[1], 1);
 		close(leakypipe[1]);
-		execlp("wc1","wc1",argv[i],NULL);
+		execlp("lc1","lc1",argv[i],NULL);
 		fail("made it to end of child!",1);
 		}	}
 
