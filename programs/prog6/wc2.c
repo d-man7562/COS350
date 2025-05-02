@@ -2,51 +2,53 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-int main(int argc, char* argv[]){
-	char ** file_array;
-	int printpipe[2], total = 0, count;	
-	if (argc<=1)
-		{fprintf(stderr,"Usage: <program name> <file>,...<file>\n");
-		return 1;}
+#include <string.h>
+#define fail(x,y) { perror(x),exit(y); }
 
-	if ((file_array = malloc(sizeof(char)*(argc-1))) == NULL)	{
-			perror("malloc");
-			free(file_array);
-			exit(1);	}
-	
-	for (int i = 1; i< argc; i++){	
-		file_array[i-1] = argv[i];
-		printf("%s\n",file_array[i-1]);
-
-	
-	for (int i = 0; i < (sizeof(file_array)/sizeof(char*)); i++)	{
-		pit_t pid = fork();
-		 if (pid==0){
-			 close(printpipe[0]);
-			 //set to stdout
-			 if (dup2(printpipe[1],1)==-1){
-				 perror("dup2");
-				 exit(1);
-			 }
-			
-		char * new_array[] = {"wc1",file_array[i],NULL};
-
-		execvp("wc1",new_array[i]);
-		
-		
-		}
-		else{
-			//read if parent
-			close(printpipe[1]);
-			close(countpipe[1]);
-
-				if (argc==2){
-				read(pipefd[0], &count, sizeof(count));
-				
-					printf("%d %s\n",count, argv[1]);
-				}
-				else{
-				
-				}
+int main(int argc, char * argv[]){
+	pid_t pid;
+	int leakypipe[2];
+	if (pipe(leakypipe) == -1) { fail("pipe failed", 1); }
+	int total = 0;
+	if (argc <= 1){
+		printf("usage: wc2 <filename, ...>\n");
 		return 0;
 	}
+		
+	for (int i = 1; i < argc; i++){
+	 pid = fork();
+	//	if (pid == -1) { fail("fork failed", 1); }
+		if (pid == 0){
+		close(leakypipe[0]); //close read
+		dup2(leakypipe[1], 1);
+		close(leakypipe[1]);
+		execlp("wc1","wc1",argv[i],NULL);
+		fail("made it to end of child!",1);
+		}	}
+
+
+/*	parent process */
+		close(leakypipe[1]); //close write
+    char buffer[256];
+    int bytes_read, count;
+    while ((bytes_read = read(leakypipe[0], buffer, sizeof(buffer)-1)) > 0) {
+        buffer[bytes_read] = '\0'; // null-terminate
+        
+        char *line = strtok(buffer, "\n");
+        while (line) {
+		printf("%s\n",line);
+            if (sscanf(line, "%d", &count) == 1) {
+                total += count;
+            }
+            line = strtok(NULL, "\n");
+        }
+    }
+    close(leakypipe[0]);
+
+    for (int i = 1; i < argc; i++) {
+        wait(NULL);
+    }
+
+    printf("%d total\n", total);
+    return 0;
+} 	
